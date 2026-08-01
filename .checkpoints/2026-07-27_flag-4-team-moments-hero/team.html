@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Team — Tensors</title>
+<meta name="description" content="Meet the people behind Tensors — leadership, advisory board, and the Tenlink, Tenscii and Tenment verticals at IIT Madras." />
+
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800,900&f[]=switzer@400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+<link rel="icon" href="assets/logos/tensors-mark.png" />
+
+<!-- Light is the default theme; only honour an explicit saved 'dark' choice. -->
+<script>
+  (function () {
+    try {
+      if (localStorage.getItem('tensors-theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="index.html#top" class="logo" aria-label="Tensors — home">
+      <img src="assets/logos/tensors-mark.png" alt="" class="logo-mark" />
+      <img src="assets/logos/tensors-logo.png" alt="Tensors" class="logo-word" />
+    </a>
+
+    <nav class="main-nav" id="main-nav">
+      <ul>
+        <li><a href="index.html#top">Home</a></li>
+        <li><a href="index.html#about">About Us</a></li>
+        <li><a href="index.html#work">Projects</a></li>
+        <li><a href="team.html" class="is-active" aria-current="page">Team</a></li>
+        <li><a href="index.html#edu">Tensors-Edu</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <a href="index.html#contact" class="btn btn-primary header-cta">
+      <span class="swap"><span class="swap-line">Get In Touch</span><span class="swap-line" aria-hidden="true">Get In Touch</span></span>
+    </a>
+
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Toggle light / dark">
+      <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4.2" />
+        <path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" />
+      </svg>
+      <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+        <path d="M20.5 14.2A8.2 8.2 0 0 1 9.8 3.5a8.3 8.3 0 1 0 10.7 10.7Z" />
+      </svg>
+    </button>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============ TEAM HERO ============ -->
+<section class="team-hero" id="top">
+  <div class="container">
+    <p class="eyebrow" data-anim="eyebrow">[ THE PEOPLE ]</p>
+    <h1 class="team-hero-title">Meet the team</h1>
+    <p class="team-hero-sub">
+      Behind every initiative is a group that refuses to settle. Our leadership,
+      advisory board, and three verticals &mdash; <span class="accent">Tenlink</span>,
+      <span class="accent">Tenscii</span> and <span class="accent">Tenment</span> &mdash;
+      drive Tensors forward.
+    </p>
+    <nav class="team-jump" aria-label="Jump to vertical">
+      <a href="#leadership">Leadership</a>
+      <a href="#tenlink">Tenlink</a>
+      <a href="#tenscii">Tenscii</a>
+      <a href="#tenment">Tenment</a>
+    </nav>
+  </div>
+</section>
+
+<!-- ============ LEADERSHIP ============ -->
+<section class="roster" id="leadership">
+  <div class="container">
+    <div class="roster-head" data-reveal>
+      <span class="team-badge" style="--v: var(--color-primary)">Leadership</span>
+      <h2 class="section-title">Direction &amp; advisory</h2>
+    </div>
+
+    <div class="member-grid" style="--m: var(--color-primary)">
+      <figure class="member member--lead" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/madhav-pradeep.jpg" alt="Madhav Pradeep" loading="lazy" onerror="this.remove()" /><span class="member-ini">MP</span></span>
+        <figcaption>
+          <span class="member-name">Madhav Pradeep</span>
+          <span class="member-role">Director</span>
+        </figcaption>
+      </figure>
+
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/anfas-nujum.jpg" alt="Anfas Nujum" loading="lazy" onerror="this.remove()" /><span class="member-ini">AN</span></span>
+        <figcaption>
+          <span class="member-name">Anfas Nujum</span>
+          <span class="member-role">Founder &amp; Advisory Board</span>
+        </figcaption>
+      </figure>
+
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/aadil.jpg" alt="Aadil" loading="lazy" onerror="this.remove()" /><span class="member-ini">AA</span></span>
+        <figcaption>
+          <span class="member-name">Aadil</span>
+          <span class="member-role">Advisory Board</span>
+        </figcaption>
+      </figure>
+
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/devanarayanan-v-s.jpg" alt="Devanarayanan V S" loading="lazy" onerror="this.remove()" /><span class="member-ini">DV</span></span>
+        <figcaption>
+          <span class="member-name">Devanarayanan V S</span>
+          <span class="member-role">Advisory Board</span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TENLINK ============ -->
+<section class="roster" id="tenlink">
+  <div class="container">
+    <div class="roster-head" data-reveal>
+      <span class="team-badge" style="--v: var(--color-orange)">Tenlink</span>
+      <h2 class="section-title">PR &amp; Corporate Relations</h2>
+      <p class="section-sub">Relationships, branding, outreach and funding &mdash; plus the Tensors Podcast and social campaigns.</p>
+    </div>
+
+    <div class="member-grid" style="--m: var(--color-orange)">
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/nizam.jpg" alt="Nizam" loading="lazy" onerror="this.remove()" /><span class="member-ini">NI</span></span>
+        <figcaption><span class="member-name">Nizam</span><span class="member-role">Senior Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/ghanashyam.jpg" alt="Ghanashyam" loading="lazy" onerror="this.remove()" /><span class="member-ini">GH</span></span>
+        <figcaption><span class="member-name">Ghanashyam</span><span class="member-role">Senior Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/anandhu.jpg" alt="Anandhu" loading="lazy" onerror="this.remove()" /><span class="member-ini">AN</span></span>
+        <figcaption><span class="member-name">Anandhu</span><span class="member-role">Executive &middot; also Tenscii</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/aman-fathima.jpg" alt="Aman Fathima" loading="lazy" onerror="this.remove()" /><span class="member-ini">AF</span></span>
+        <figcaption><span class="member-name">Aman Fathima</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/dani.jpg" alt="Dani" loading="lazy" onerror="this.remove()" /><span class="member-ini">DA</span></span>
+        <figcaption><span class="member-name">Dani</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/maria.jpg" alt="Maria" loading="lazy" onerror="this.remove()" /><span class="member-ini">MA</span></span>
+        <figcaption><span class="member-name">Maria</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/mishal.jpg" alt="Mishal" loading="lazy" onerror="this.remove()" /><span class="member-ini">MI</span></span>
+        <figcaption><span class="member-name">Mishal</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/parvathy.jpg" alt="Parvathy" loading="lazy" onerror="this.remove()" /><span class="member-ini">PA</span></span>
+        <figcaption><span class="member-name">Parvathy</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/prabhav.jpg" alt="Prabhav" loading="lazy" onerror="this.remove()" /><span class="member-ini">PR</span></span>
+        <figcaption><span class="member-name">Prabhav</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TENSCII ============ -->
+<section class="roster" id="tenscii">
+  <div class="container">
+    <div class="roster-head" data-reveal>
+      <span class="team-badge" style="--v: var(--color-primary-light)">Tenscii</span>
+      <h2 class="section-title">Technology</h2>
+      <p class="section-sub">AI/ML, web development and every Tensors platform &mdash; the team behind this year's revamp.</p>
+    </div>
+
+    <div class="member-grid" style="--m: var(--color-primary-light)">
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/ikram.jpg" alt="Ikram" loading="lazy" onerror="this.remove()" /><span class="member-ini">IK</span></span>
+        <figcaption><span class="member-name">Ikram</span><span class="member-role">Senior Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/vijay.jpg" alt="Vijay" loading="lazy" onerror="this.remove()" /><span class="member-ini">VI</span></span>
+        <figcaption><span class="member-name">Vijay</span><span class="member-role">Senior Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/anandhu.jpg" alt="Anandhu" loading="lazy" onerror="this.remove()" /><span class="member-ini">AN</span></span>
+        <figcaption><span class="member-name">Anandhu</span><span class="member-role">Executive &middot; also Tenlink</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/sahal-m-k.jpg" alt="Sahal M K" loading="lazy" onerror="this.remove()" /><span class="member-ini">SM</span></span>
+        <figcaption><span class="member-name">Sahal M K</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/sauda.jpg" alt="Sauda" loading="lazy" onerror="this.remove()" /><span class="member-ini">SA</span></span>
+        <figcaption><span class="member-name">Sauda</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/sinan.jpg" alt="Sinan" loading="lazy" onerror="this.remove()" /><span class="member-ini">SI</span></span>
+        <figcaption><span class="member-name">Sinan</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TENMENT ============ -->
+<section class="roster" id="tenment">
+  <div class="container">
+    <div class="roster-head" data-reveal>
+      <span class="team-badge" style="--v: var(--color-teal)">Tenment</span>
+      <h2 class="section-title">Exam &amp; Mentorship</h2>
+      <p class="section-sub">JEE mocks, Olympiad and JoSAA counselling, plus the Tensors LMS and mentorship portal.</p>
+    </div>
+
+    <div class="member-grid" style="--m: var(--color-teal)">
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/shejin.jpg" alt="Shejin" loading="lazy" onerror="this.remove()" /><span class="member-ini">SH</span></span>
+        <figcaption><span class="member-name">Shejin</span><span class="member-role">Senior Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/harigovind.jpg" alt="Harigovind" loading="lazy" onerror="this.remove()" /><span class="member-ini">HA</span></span>
+        <figcaption><span class="member-name">Harigovind</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/abinav.jpg" alt="Abinav" loading="lazy" onerror="this.remove()" /><span class="member-ini">AB</span></span>
+        <figcaption><span class="member-name">Abinav</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+      <figure class="member" data-reveal="scale">
+        <span class="member-photo"><img src="assets/images/team/mahadevan-sanju.jpg" alt="Mahadevan Sanju" loading="lazy" onerror="this.remove()" /><span class="member-ini">MS</span></span>
+        <figcaption><span class="member-name">Mahadevan Sanju</span><span class="member-role">Executive</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer" id="contact">
+  <div class="container footer-top">
+    <div class="footer-cta" data-reveal>
+      <p class="eyebrow">[ LET'S BUILD SOMETHING ]</p>
+      <h2 class="section-title">Want to join the team?</h2>
+      <p class="section-sub">Client projects, collaborations, or joining Tensors &mdash; reach out.</p>
+      <a href="mailto:hello@tensors.in" class="btn btn-primary">
+        <span class="swap"><span class="swap-line">hello@tensors.in</span><span class="swap-line" aria-hidden="true">hello@tensors.in</span></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <a href="index.html#top" class="logo">
+      <img src="assets/logos/tensors-mark.png" alt="" class="logo-mark" />
+      <img src="assets/logos/tensors-logo.png" alt="Tensors" class="logo-word" />
+    </a>
+    <nav class="footer-nav">
+      <a href="index.html#about"><span class="swap"><span class="swap-line">About</span><span class="swap-line" aria-hidden="true">About</span></span></a>
+      <a href="index.html#work"><span class="swap"><span class="swap-line">Projects</span><span class="swap-line" aria-hidden="true">Projects</span></span></a>
+      <a href="team.html"><span class="swap"><span class="swap-line">Team</span><span class="swap-line" aria-hidden="true">Team</span></span></a>
+      <a href="index.html#edu"><span class="swap"><span class="swap-line">Tensors-Edu</span><span class="swap-line" aria-hidden="true">Tensors-Edu</span></span></a>
+    </nav>
+    <div class="socials">
+      <a href="#" aria-label="Instagram"><span class="swap"><span class="swap-line">Instagram</span><span class="swap-line" aria-hidden="true">Instagram</span></span></a>
+      <a href="#" aria-label="LinkedIn"><span class="swap"><span class="swap-line">LinkedIn</span><span class="swap-line" aria-hidden="true">LinkedIn</span></span></a>
+      <a href="#" aria-label="Podcast"><span class="swap"><span class="swap-line">Podcast</span><span class="swap-line" aria-hidden="true">Podcast</span></span></a>
+    </div>
+  </div>
+  <p class="container copyright">&copy; <span id="year">2026</span> Tensors, IIT Madras. All rights reserved.</p>
+</footer>
+
+<!-- ============ LIBRARIES (CDN) ============ -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+<script src="js/main.js"></script>
+</body>
+</html>

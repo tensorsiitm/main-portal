@@ -1,0 +1,2494 @@
+/* ==========================================================================
+   Tensors: Design Tokens
+   ========================================================================== */
+:root {
+  /* LIGHT theme is now the default (matches the real tensors.in: light ground,
+     green brand). Dark theme is opt-in via [data-theme="dark"] below. */
+  --color-bg: #f6f8f7;
+  --color-bg-alt: #edf1ef;
+  --color-surface: #e3e9e6;
+  --color-border: rgba(11, 22, 19, 0.12);
+  --grid-line: rgba(28, 140, 116, 0.04); /* faint green-tinted site-wide grid */
+
+  --color-text: #0b1613;
+  --color-text-muted: rgba(11, 22, 19, 0.68);
+  --color-text-faint: rgba(11, 22, 19, 0.45);
+
+  --color-primary: #1c8c74; /* deepened logo green for AA contrast on light */
+  --color-primary-light: #22a286; /* the exact logo green serves as the lighter tint */
+  --color-primary-deep: #124a3d;
+  --color-teal: #1c8c74;
+  --color-orange: #d65422;
+
+  /* Team vertical accents. Three distinct muted hues, each at least 4.5:1
+     against the white badge text, and deliberately shared by both themes so
+     the trio reads identically whichever theme is active. Orange is NOT a
+     vertical color: it stays reserved for placeholder/draft flags. */
+  --color-tenlink: #18806a; /* brand green */
+  --color-tensci: #2e6f9e; /* slate blue  */
+  --color-tenment: #8a6a3b; /* warm ochre  */
+
+  /* RGB triplets for rgba()/color-mix() effects (glows, translucent header,
+     grid lines) that need to track the active theme's colors. */
+  --color-primary-rgb: 28, 140, 116;
+  --color-teal-rgb: 28, 140, 116;
+  --color-bg-rgb: 246, 248, 247;
+  --color-text-rgb: 11, 22, 19;
+
+  --font-display: "Cabinet Grotesk", "Switzer", -apple-system, sans-serif;
+  --font-body:
+    "Switzer", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --container: 1240px;
+  --header-h: 84px;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Special Gothic: local placeholder @font-face. Replace files in
+   assets/fonts/ with real webfont files (woff2/woff) when available. */
+@font-face {
+  font-family: "Special Gothic";
+  src:
+    url("../assets/fonts/font-special-gothic.woff2") format("woff2"),
+    url("../assets/fonts/font-special-gothic.woff") format("woff");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-special-gothic: "Special Gothic", var(--font-display);
+}
+
+/* Utility class to apply the Special Gothic face to specific text. */
+.font-special-gothic {
+  font-family: var(--font-special-gothic);
+  letter-spacing: -0.02em;
+}
+
+/* ==========================================================================
+   Dark theme: the original deep-green palette, now opt-in.
+   Toggled via [data-theme="dark"] on <html> (see js/main.js). Everything that
+   reads these tokens (or the *-rgb triplets) repaints instantly.
+   ========================================================================== */
+:root[data-theme="dark"] {
+  --color-bg: #07120f;
+  --color-bg-alt: #0c1a16;
+  --color-surface: #122622;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --grid-line: rgba(
+    44,
+    191,
+    156,
+    0.045
+  ); /* faint green-tinted site-wide grid */
+
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.65);
+  --color-text-faint: rgba(255, 255, 255, 0.4);
+
+  --color-primary: #22a286; /* exact Tensors logo green (sampled) */
+  --color-primary-light: #2cbf9c;
+  --color-primary-deep: #14614f;
+  --color-teal: #2cbf9c;
+  --color-orange: #e8622c;
+
+  --color-primary-rgb: 34, 162, 134;
+  --color-teal-rgb: 44, 191, 156;
+  --color-bg-rgb: 7, 18, 15;
+  --color-text-rgb: 255, 255, 255;
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+} /* Lenis handles smoothing */
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Site-wide technical grid: a fixed, faint blueprint layer behind all content
+   so empty stretches never feel bare. Sits above the flat bg, below everything
+   else; theme-aware via --grid-line, softly vignetted so edges never harden. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 96px 96px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 130% 100% at 50% 32%,
+    #000 52%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 130% 100% at 50% 32%,
+    #000 52%,
+    transparent 100%
+  );
+}
+
+/* Smooth cross-fade when switching themes. Scoped to color properties so it
+   never interferes with GSAP transforms / reveal animations. */
+body,
+.site-header,
+.value-card,
+.work-card,
+.team-card,
+.quote-card,
+.vision-card,
+.collabs-pill,
+.event-row,
+.edu-list li::before,
+.ph,
+.work-media,
+.team-badge {
+  transition:
+    background-color 0.45s var(--ease),
+    border-color 0.45s var(--ease),
+    color 0.45s var(--ease);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+ul {
+  list-style: none;
+}
+button {
+  font: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+}
+
+.accent {
+  color: var(--color-primary);
+}
+
+/* ==========================================================================
+   Shared utilities
+   ========================================================================== */
+/* Eyebrows / section labels use the mono face, the signature technical
+   accent that anchors the type hierarchy. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  min-height: 44px; /* comfortable thumb tap target */
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    transform 0.3s var(--ease),
+    background 0.3s var(--ease),
+    border-color 0.3s var(--ease);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+.btn-ghost:hover {
+  border-color: var(--color-text-muted);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Text-swap hover (antonandirene.com-style): current line slides up and out,
+   a stacked duplicate slides up into place from below. Reverses on hover-out.
+   Markup: <span class="swap"><span class="swap-line">Label</span><span
+   class="swap-line" aria-hidden="true">Label</span></span>
+   ========================================================================== */
+.swap {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.swap-line {
+  display: block;
+  transition: transform 0.45s var(--ease);
+}
+.swap-line + .swap-line {
+  position: absolute;
+  left: 0;
+  top: 100%;
+}
+/* Triggered from the interactive ancestor's hover, not .swap's own box,
+   a .btn's hit area is bigger (padding) than the text it wraps. */
+.btn:hover .swap-line {
+  transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swap-line {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   Preloader: "Initializing" brand intro for a tech consultancy.
+   Full-bleed light panel: brand + live status up top, a giant count in the
+   centre, a process word that cycles, and a progress rail at the base.
+   On complete it wipes upward (expo) to reveal the hero.
+   Body starts locked; JS removes .is-loading to release scroll.
+   ========================================================================== */
+body.is-loading {
+  overflow: hidden;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-bg);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: clamp(24px, 4vw, 48px);
+  overflow: hidden;
+  will-change: transform;
+}
+/* Brand baseline: a green rule at the very bottom that rides up with the
+   panel during the exit wipe. */
+.preloader::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: var(--color-primary);
+}
+/* JS/GSAP missing → never trap the page behind the loader. */
+.no-js .preloader {
+  display: none;
+}
+.no-js.is-loading,
+.no-js .is-loading {
+  overflow: visible;
+}
+
+/* Already launched this session (set in the <head> before first paint): hide
+   the panel outright and leave the page scrollable, so returning to Home is an
+   ordinary load with just the hero's own entrance. */
+.has-launched .preloader {
+  display: none;
+}
+.has-launched.is-loading,
+.has-launched .is-loading {
+  overflow: visible;
+}
+
+/* Faint technical grid, focused toward the centre */
+.pre-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 75% 70% at 50% 45%,
+    #000 20%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 75% 70% at 50% 45%,
+    #000 20%,
+    transparent 78%
+  );
+  opacity: 0.6;
+}
+
+/* ---- Centre stage: the T mark, wordmark, cycling discipline ---- */
+.pre-stage {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(18px, 2.8vw, 28px);
+}
+
+.pre-logo {
+  position: relative;
+  width: clamp(104px, 17vw, 172px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+.pre-logo-img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* No glow and no tinted drop-shadow: the bare mark only. */
+  animation: preFloat 3.4s ease-in-out infinite;
+}
+@keyframes preFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.pre-wordmark {
+  width: auto;
+  height: clamp(26px, 4.6vw, 44px); /* the real TENSORS wordmark artwork */
+  object-fit: contain;
+}
+
+.pre-rotator {
+  height: 1.5em;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1.5vw, 13px);
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.pre-rotator span {
+  display: block;
+}
+
+/* ---- Foot: live status + count over a thin progress rail ---- */
+.pre-foot {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pre-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.pre-status {
+  font-family: var(--font-mono);
+  font-size: clamp(9px, 1.3vw, 11px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pre-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: preBlink 1s steps(2, start) infinite;
+}
+@keyframes preBlink {
+  50% {
+    opacity: 0.2;
+  }
+}
+.pre-count {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(28px, 5vw, 48px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+.pre-count i {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 0.34em;
+  font-weight: 700;
+  vertical-align: top;
+  margin-left: 0.12em;
+  color: var(--color-primary);
+}
+.pre-bar {
+  position: relative;
+  width: 100%;
+  height: 3px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+.pre-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  background: var(--color-primary);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  background: rgba(var(--color-bg-rgb), 0);
+  border-bottom: 1px solid transparent;
+  transition:
+    background 0.4s var(--ease),
+    border-color 0.4s var(--ease),
+    height 0.4s var(--ease);
+}
+
+.site-header.is-scrolled {
+  background: rgba(var(--color-bg-rgb), 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--color-border);
+  height: 68px;
+}
+
+.header-inner {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+/* Header auto-hides on scroll-down, returns on scroll-up */
+.site-header.is-hidden {
+  transform: translateY(-100%);
+}
+.site-header {
+  transition:
+    background 0.4s var(--ease),
+    border-color 0.4s var(--ease),
+    height 0.4s var(--ease),
+    transform 0.45s var(--ease);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+.logo-mark {
+  width: auto;
+  height: 34px;
+  transition: height 0.4s var(--ease);
+}
+.logo-word {
+  width: auto;
+  height: 19px; /* wordmark cap-height tuned to the T-mark */
+  transition: height 0.4s var(--ease);
+}
+.site-header.is-scrolled .logo-mark {
+  height: 28px;
+}
+.site-header.is-scrolled .logo-word {
+  height: 16px;
+}
+
+.main-nav ul {
+  display: flex;
+  gap: 36px;
+}
+
+.main-nav a {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: color 0.25s var(--ease);
+  position: relative;
+  padding: 4px 0;
+}
+
+/* Underline grows from left on hover / active section */
+.main-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1.5px;
+  background: var(--color-primary-light);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s var(--ease);
+}
+.main-nav a:hover,
+.main-nav a.is-active {
+  color: var(--color-text);
+}
+.main-nav a:hover::after,
+.main-nav a.is-active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.header-cta {
+  flex: 0 0 auto;
+}
+
+/* ---- Theme toggle (sun / moon) ---- */
+.theme-toggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  position: relative;
+  z-index: 2;
+  transition:
+    color 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+.theme-toggle:hover {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+.theme-icon {
+  width: 19px;
+  height: 19px;
+  position: absolute;
+  transition:
+    opacity 0.3s var(--ease),
+    transform 0.4s var(--ease);
+}
+/* Light theme (default) shows the moon (tap → go dark); dark shows the sun. */
+.theme-icon--sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.6);
+}
+.theme-icon--moon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+:root[data-theme="dark"] .theme-icon--sun {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+:root[data-theme="dark"] .theme-icon--moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.6);
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  z-index: 2;
+}
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 2px;
+  transition:
+    transform 0.35s var(--ease),
+    opacity 0.25s var(--ease),
+    width 0.35s var(--ease);
+}
+.nav-toggle span:nth-child(3) {
+  width: 65%;
+  align-self: flex-end;
+}
+.nav-toggle.is-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-toggle.is-open span:nth-child(2) {
+  opacity: 0;
+}
+.nav-toggle.is-open span:nth-child(3) {
+  width: 100%;
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center; /* vertically centre the split so it fills one screen */
+  text-align: left;
+  padding: calc(var(--header-h) + 16px) 0 40px;
+  overflow: hidden;
+}
+/* Two columns: copy on the left, cover photo on the right, sized to fit in a
+   single viewport. Centred within the container; the hero itself stays full
+   width so the background wash spans the whole screen. */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.38fr);
+  align-items: center;
+  /* Tightened from 48px: the reclaimed space goes to the photo, and the copy
+     column still measures wide enough for "Consultancy" to stay on one line. */
+  gap: clamp(16px, 2.5vw, 36px);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Soft brand wash, subtle enough to read well on the light ground (and still
+   fine in dark). */
+.hero-glow {
+  position: absolute;
+  top: -22%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 900px;
+  max-width: 140vw;
+  background: radial-gradient(
+    circle,
+    rgba(var(--color-primary-rgb), 0.14) 0%,
+    rgba(var(--color-primary-rgb), 0) 62%
+  );
+}
+
+.hero-glow-2 {
+  position: absolute;
+  bottom: -28%;
+  right: -8%;
+  width: 680px;
+  height: 680px;
+  max-width: 120vw;
+  background: radial-gradient(
+    circle,
+    rgba(var(--color-teal-rgb), 0.08) 0%,
+    rgba(var(--color-teal-rgb), 0) 65%
+  );
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(var(--color-text-rgb), 0.04) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      rgba(var(--color-text-rgb), 0.04) 1px,
+      transparent 1px
+    );
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 55% at 50% 24%,
+    black 35%,
+    transparent 85%
+  );
+  mask-image: radial-gradient(
+    ellipse 70% 55% at 50% 24%,
+    black 35%,
+    transparent 85%
+  );
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Real cover photo (transparent torn edges), a soft drop-shadow follows its
+   alpha shape, so no hard frame is needed. Fills the right column and is
+   height-capped so the whole hero fits one screen. */
+.hero-media {
+  position: relative;
+  z-index: 1;
+  /* The photo is a wide 1014x611 landscape, so in a tall hero it left a band of
+     empty ground either side of it. Letting it bleed past the container's right
+     padding toward the viewport edge takes up that slack. .hero has
+     overflow: hidden, so the bleed can never cause a horizontal scrollbar. */
+  --hero-bleed: clamp(0px, 8vw, 130px);
+  width: calc(100% + var(--hero-bleed));
+  margin: 0 calc(-1 * var(--hero-bleed)) 0 0;
+}
+.hero-media img {
+  width: 100%;
+  height: auto;
+  max-height: min(88svh, 820px);
+  object-fit: contain;
+  filter: drop-shadow(0 26px 50px rgba(11, 22, 19, 0.16));
+}
+
+.hero-inner .eyebrow {
+  margin-bottom: 24px;
+}
+
+.hero-title {
+  font-size: clamp(40px, 7vw, 80px);
+  overflow: hidden;
+}
+
+.hero-title .line {
+  display: block;
+  overflow: hidden;
+}
+
+.hero-sub {
+  margin-top: 28px;
+  max-width: 620px;
+  font-size: clamp(16px, 1.8vw, 19px);
+  color: var(--color-text-muted);
+}
+
+.hero-sub em {
+  display: block;
+  margin-top: 6px;
+  font-style: normal;
+  font-size: 13px;
+  color: var(--color-orange);
+  opacity: 0.85;
+}
+
+.hero-actions {
+  margin-top: 40px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.scroll-cue span {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+.scroll-line i {
+  display: block;
+  width: 100%;
+  height: 50%;
+  background: var(--color-teal);
+  animation: scrollCue 1.8s ease-in-out infinite;
+}
+@keyframes scrollCue {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+/* ==========================================================================
+   Section shells + shared bits
+   ========================================================================== */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.section {
+  padding: 100px 0;
+  position: relative;
+}
+.section + .section {
+  padding-top: 0;
+}
+
+.section-head {
+  max-width: 720px;
+  margin-bottom: 48px;
+}
+.section-head .eyebrow {
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: clamp(30px, 4.5vw, 52px);
+}
+
+.section-sub {
+  margin-top: 18px;
+  color: var(--color-text-muted);
+  font-size: clamp(15px, 1.5vw, 18px);
+  max-width: 560px;
+}
+
+/* Scroll-linked parallax reveal: GSAP scrubs opacity + y as it enters view.
+   Hidden by default so there's no flash before JS takes over. */
+[data-reveal] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+/* No-JS / reduced-motion safety net: show everything. */
+.no-js [data-reveal] {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Split layout: sticky heading rests on one side, content slides in the other.
+   Alternate sides per section with .reverse.
+   ========================================================================== */
+.split {
+  display: grid;
+  grid-template-columns: minmax(220px, 26%) 1fr;
+  gap: 40px 56px;
+  align-items: start;
+}
+.split.reverse {
+  grid-template-columns: 1fr minmax(220px, 26%);
+}
+.split.reverse .split-head {
+  order: 2;
+}
+
+/* Anchor the sticky heading a little below the top so the column beside the
+   content doesn't read as a tall empty gap. */
+.split-head {
+  position: sticky;
+  top: calc(var(--header-h) + 40px);
+  align-self: start;
+}
+.split-head .eyebrow {
+  margin-bottom: 16px;
+}
+.split-head .section-sub {
+  margin-top: 16px;
+}
+
+.split-body {
+  min-width: 0;
+} /* let grids shrink instead of overflowing */
+.split-body > * + * {
+  margin-top: 28px;
+}
+
+/* ==========================================================================
+   Placeholder system  (.ph): swap for real <img> later
+   ========================================================================== */
+.ph {
+  --ph-accent: var(--color-primary);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ph-accent) 30%, var(--color-bg)) 0%,
+    var(--color-surface) 60%
+  );
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  color: var(--color-text-faint);
+}
+.ph::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(var(--color-text-rgb), 0.05) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      rgba(var(--color-text-rgb), 0.05) 1px,
+      transparent 1px
+    );
+  background-size: 28px 28px;
+  opacity: 0.5;
+}
+.ph > span {
+  position: relative;
+  z-index: 1;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0 14px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   About + Vision
+   ========================================================================== */
+.about-body p {
+  color: var(--color-text-muted);
+  margin-bottom: 18px;
+}
+.about-body em {
+  color: var(--color-orange);
+  font-style: normal;
+  font-size: 13px;
+}
+
+.vision-card {
+  margin-top: 32px;
+  padding: 28px;
+  border-radius: 18px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+}
+.vision-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-light);
+}
+.vision-text {
+  margin-top: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2vw, 23px);
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+/* ==========================================================================
+   Stats
+   ========================================================================== */
+.stats {
+  padding: 90px 0;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  padding: 56px 32px;
+}
+.stat {
+  text-align: center;
+}
+.stat-num {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(36px, 5.4vw, 62px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+.stat-label {
+  font-family: var(--font-mono);
+  margin-top: 14px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+.stats-note {
+  margin-top: 18px;
+}
+.stats-note em,
+.events-note em {
+  color: var(--color-orange);
+  font-style: normal;
+  font-size: 12.5px;
+  opacity: 0.85;
+}
+
+/* ==========================================================================
+   Values
+   ========================================================================== */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.value-card {
+  padding: 28px;
+  border-radius: 18px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  transition:
+    transform 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+.value-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-primary);
+}
+.value-index {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-teal);
+  letter-spacing: 0.02em;
+}
+.value-card h3 {
+  margin: 18px 0 10px;
+  font-size: 22px;
+}
+.value-card p {
+  font-size: 14.5px;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Work / Projects
+   ========================================================================== */
+.work-group-title {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin: 56px 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.work-group-title span {
+  white-space: nowrap;
+}
+.work-group-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.work-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  transition:
+    transform 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+.work-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-primary);
+}
+.work-media {
+  height: 200px;
+  border: none;
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+/* Every source photo is pre-cropped to the same 720x480, and cover + a fixed
+   box height means all eight render at exactly the same size whatever the
+   original framing was. The image is 112% tall and offset -6% so the parallax
+   (which slides it +/-6%) can never expose an edge inside the frame. */
+.work-media img {
+  position: absolute;
+  left: 0;
+  top: -6%;
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  object-position: center;
+}
+.work-media > span {
+  color: var(--color-text-muted);
+}
+.work-info {
+  padding: 20px;
+}
+.work-info h4 {
+  font-size: 18px;
+}
+.work-info p {
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+}
+.work-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  margin-top: 14px;
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-teal);
+  border: 1px solid var(--color-border);
+  border-radius: 100px;
+  padding: 4px 12px;
+}
+
+/* ==========================================================================
+   Moments: continuous auto-scrolling marquee (JS clones + animates)
+   ========================================================================== */
+.moments {
+  overflow: hidden;
+} /* clip the off-screen slides */
+/* Native horizontal scroll container: auto-advances via JS, but the user can
+   grab-drag (mouse) or swipe (touch) to scrub to any photo. Scrollbar hidden. */
+.moments-track {
+  display: flex;
+  gap: 20px;
+  padding: 4px 0 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  will-change: scroll-position;
+}
+.moments-track::-webkit-scrollbar {
+  display: none;
+}
+.moments-track.is-grabbing {
+  cursor: grabbing;
+}
+.moments-track.is-grabbing img {
+  pointer-events: none;
+}
+.moment-slide {
+  flex: 0 0 clamp(260px, 32vw, 400px);
+  height: 300px; /* fixed box → every photo renders the same size */
+  user-select: none;
+  border-radius: 16px;
+}
+.moment-slide > span {
+  color: var(--color-text-muted);
+}
+/* Real photo fills the slide box uniformly (cropped to cover); sits above the
+   placeholder so an empty slot still looks intentional until a file is added. */
+.moment-slide > img {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  -webkit-user-drag: none;
+}
+/* Fallback when JS/GSAP is unavailable, or the user prefers reduced motion:
+   let the strip scroll manually instead of clipping the off-screen slides. */
+.no-js .moments-track {
+  overflow-x: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .moments-track {
+    width: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .moments-track::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Team
+   ========================================================================== */
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.team-card {
+  display: block;
+  padding: 28px;
+  border-radius: 20px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition:
+    transform 0.4s var(--ease),
+    border-color 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+.team-card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(
+    in srgb,
+    var(--color-primary) 45%,
+    var(--color-border)
+  );
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.1);
+}
+.team-card-top {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.team-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: var(--v, var(--color-primary));
+  padding: 5px 14px;
+  border-radius: 100px;
+}
+.team-card-top h3 {
+  margin-top: 16px;
+  font-size: 24px;
+}
+.team-card > p {
+  font-size: 14.5px;
+  color: var(--color-text-muted);
+}
+.team-people {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+.people-note {
+  font-size: 12px;
+  color: var(--color-text-faint);
+  margin-left: 6px;
+}
+
+/* Home vertical card → clickable preview that links to the full team page */
+.team-people-link {
+  cursor: pointer;
+  flex-wrap: wrap;
+}
+.team-avatars {
+  display: inline-flex;
+  align-items: center;
+}
+.team-ini {
+  position: relative;
+  overflow: hidden;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: color-mix(
+    in srgb,
+    var(--m, var(--color-primary)) 78%,
+    var(--color-text)
+  );
+  background:
+    radial-gradient(
+      120% 120% at 30% 20%,
+      color-mix(in srgb, var(--m, var(--color-primary)) 34%, transparent),
+      transparent 62%
+    ),
+    var(--color-bg);
+  border: 1px solid var(--color-border);
+  margin-left: -10px;
+  transition: transform 0.3s var(--ease);
+}
+.team-ini:first-child {
+  margin-left: 0;
+}
+/* Real member photo sits over the initials, which stay underneath as the
+   fallback: if the file is missing, onerror drops the <img> and the initials
+   show through exactly as before. Served from thumbs/ at 76px (2x the 38px
+   circle) so the home page doesn't pull ~2 MB of full-size portraits. */
+.team-ini img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.team-ini--more {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+}
+.team-card:hover .team-ini {
+  transform: translateY(-3px);
+}
+.people-cta {
+  margin-left: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.people-cta span {
+  display: inline-block;
+  transition: transform 0.3s var(--ease);
+}
+.team-card:hover .people-cta span {
+  transform: translateX(4px);
+}
+.team-viewall {
+  margin-top: 26px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  --ph-accent: var(--color-primary-light);
+}
+.avatar > span,
+.avatar::before {
+  border-radius: 50%;
+}
+.avatar-lg {
+  width: 64px;
+  height: 64px;
+}
+
+/* ==========================================================================
+   Tensors-Edu
+   ========================================================================== */
+.edu-list {
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.edu-list li {
+  font-size: 14.5px;
+  color: var(--color-text-muted);
+  padding-left: 20px;
+  position: relative;
+}
+.edu-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-teal);
+}
+.edu-list span {
+  color: var(--color-text);
+  font-weight: 600;
+  margin-right: 6px;
+}
+/* This one is a UI screenshot, not a photo: the frame takes the image's own
+   2.212 ratio and the image is contained, so none of the on-screen text gets
+   cropped. (It also skips the parallax the photo cards use, since sliding the
+   image inside the frame would clip that text.) */
+.edu-media {
+  min-height: 0;
+  aspect-ratio: 1400 / 633;
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--color-surface);
+}
+.edu-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.edu-media > span {
+  color: var(--color-text-muted);
+}
+/* Match the tighter, consistent spacing rhythm used inside the other
+   components (image → text → button), instead of the generic 28px. */
+.edu-body > * + * {
+  margin-top: 20px;
+}
+.edu-body .btn {
+  margin-top: 28px;
+}
+
+/* ==========================================================================
+   Events
+   ========================================================================== */
+.events-list {
+  border-top: 1px solid var(--color-border);
+}
+.event-row {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 24px;
+  align-items: center;
+  padding: 26px 4px;
+  border-bottom: 1px solid var(--color-border);
+  transition:
+    padding-left 0.35s var(--ease),
+    background 0.35s var(--ease);
+}
+.event-row:hover {
+  padding-left: 20px;
+  background: var(--color-bg-alt);
+}
+.event-year {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--color-teal);
+}
+.event-body h4 {
+  font-size: 20px;
+}
+.event-body p {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+.event-tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 100px;
+  padding: 5px 13px;
+  white-space: nowrap;
+}
+.events-note {
+  margin-top: 18px;
+}
+
+/* ==========================================================================
+   Collaborations: scatter cloud (27n.gg "Our Clients"-style)
+   Pills burst outward from the centre and grow to full size, landing dead
+   level (no rotation). Position/size come from per-pill custom props
+   (--x/--y/--s); GSAP tweens a single --p progress var 0 to 1 once the stage
+   is fully in view, and reverses it back to 0 on scroll-up.
+   ========================================================================== */
+/* This section is always dark, whichever theme the rest of the page is in.
+   Overriding the tokens (rather than hardcoding colours) means everything
+   inside, the eyebrow, heading, ghost watermark and pill borders, repaints
+   from the dark palette automatically. */
+.collabs {
+  --color-bg: #07120F;
+  --color-bg-alt: #0C1A16;
+  --color-surface: #122622;
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-text: #FFFFFF;
+  --color-text-muted: rgba(255, 255, 255, 0.65);
+  --color-text-faint: rgba(255, 255, 255, 0.4);
+  --color-text-rgb: 255, 255, 255;
+  --color-primary: #22A286;
+  --color-primary-light: #2CBF9C;
+  --color-teal: #2CBF9C;
+  --color-primary-rgb: 34, 162, 134;
+
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* `.section + .section` zeroes top padding site-wide, which made the dark block
+   butt straight into whatever follows. Give the next section its padding back
+   so there's a band of light ground between the two. */
+.collabs + .section {
+  padding-top: clamp(64px, 8vw, 112px);
+}
+
+.collabs-stage {
+  position: relative;
+  max-width: var(--container);
+  margin: 0 auto;
+  min-height: 880px;
+  padding: 40px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collabs-giant {
+  position: relative;
+  z-index: 2;
+  max-width: 15ch;
+  font-size: clamp(38px, 6.4vw, 92px);
+  text-align: center;
+}
+.collabs-giant::before {
+  content: attr(data-ghost);
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+  /* Same word, softened: blurring it (rather than just fading it) keeps it
+     legible as a shape while making it deliberately hard to read. */
+  opacity: 0.16;
+  filter: blur(7px);
+}
+
+.collabs-cloud {
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* behind the title, so pills emerge from under it */
+}
+.collabs-pill {
+  --p: 0;
+  --x: 0px;
+  --y: 0px;
+  --s: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 40px;
+  border-radius: 999px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  opacity: var(--p);
+  /* No rotation term, so pills travel in a straight burst and land dead level,
+     never slanted, no matter where they started from. */
+  transform: translate(-50%, -50%)
+    translate(calc(var(--p) * var(--x)), calc(var(--p) * var(--y)))
+    scale(calc(0.25 + var(--p) * (var(--s) - 0.25)));
+  transition:
+    color 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+.collabs-pill:hover {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+}
+.collabs-pill--logo {
+  padding: 18px 32px;
+}
+/* The logos are pre-trimmed of their blank borders (see
+   collaborators/LOGOS.json), so a fixed height fills the pill with artwork
+   instead of padding. Widths differ per logo, which suits the scattered look. */
+.collabs-pill--logo img {
+  height: 72px;
+  width: auto;
+  display: block;
+}
+/* Every one of these logos is a flat opaque rectangle with its own background,
+   so the pill gets an intentional white card rather than showing that
+   rectangle floating on a themed pill. */
+.collabs-pill--white-bg {
+  background: #fff;
+  border-color: #fff;
+}
+.collabs-pill--white-bg:hover {
+  border-color: var(--color-primary);
+}
+
+/* ==========================================================================
+   Director quotes
+   ========================================================================== */
+.quote-grid {
+  display: grid;
+  /* Four leader quotes now, so pair them up once there's room for two. */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+/* Real leader photo in the round frame. Reads from thumbs/ at 128px (2x the
+   64px avatar); the full-size portraits are ~1 MB together. */
+.quote-avatar {
+  display: block;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--color-surface);
+}
+.quote-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.quote-card {
+  padding: 36px;
+  border-radius: 20px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+}
+.quote-card blockquote {
+  margin: 22px 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(18px, 2vw, 23px);
+  line-height: 1.4;
+}
+.quote-card figcaption strong {
+  display: block;
+  font-size: 16px;
+}
+.quote-card figcaption span {
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-alt);
+  padding-top: 90px;
+}
+.footer-top {
+  display: grid;
+  /* CTA, then two narrow columns: the nav list and the social icons. */
+  grid-template-columns: 1.4fr 0.7fr 1.1fr;
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+  padding-bottom: 56px;
+}
+.footer-cta .section-title {
+  font-size: clamp(28px, 3.5vw, 44px);
+}
+.footer-cta .btn {
+  margin-top: 26px;
+}
+
+.footer-col-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin-bottom: 18px;
+}
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* A short line of copy so the column reads as content rather than three
+   icons floating in empty space. */
+.footer-col-note {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+  max-width: 34ch;
+  margin-bottom: 18px;
+}
+.footer-links a {
+  font-size: 15px;
+  color: var(--color-text-muted);
+  width: fit-content;
+  transition: color 0.25s var(--ease);
+}
+.footer-links a:hover {
+  color: var(--color-primary);
+}
+
+.footer-socials {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+/* Icons only, no labels, so each link still needs its aria-label to be
+   announced, and a 44px box to stay a comfortable tap target. */
+.footer-socials a {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  transition:
+    color 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    background 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+.footer-socials svg {
+  width: 20px;
+  height: 20px;
+}
+.footer-socials a:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.08);
+  transform: translateY(-2px);
+}
+
+/* Phone numbers + email, sat on their own rule above the copyright. */
+.footer-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px clamp(28px, 5vw, 64px);
+  padding-top: 28px;
+  padding-bottom: 28px;
+  border-top: 1px solid var(--color-border);
+}
+.footer-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: var(--color-text-muted);
+  transition: color 0.25s var(--ease);
+}
+.footer-contact:hover {
+  color: var(--color-text);
+}
+.contact-ico {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: var(--color-primary);
+}
+.contact-name::after {
+  content: " :";
+}
+.contact-value {
+  color: var(--color-text);
+}
+
+/* Bottom strip is the copyright alone, centred. */
+.copyright {
+  padding-top: 22px;
+  padding-bottom: 40px;
+  font-size: 13px;
+  color: var(--color-text-faint);
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none;
+  }
+  .scroll-line i {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+  /* Skip the launch animation entirely */
+  .preloader {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Responsive  (base = desktop; these scale down)
+   Tiers: 1024 tablet-landscape · 900 tablet-portrait + nav collapse
+          · 768 tablet · 640 phones · 430 large phones · 375 small phones
+   ========================================================================== */
+
+/* ---- ≤1024: sticky two-column split sections stack; footer stacks ---- */
+@media (max-width: 1024px) {
+  .split,
+  .split.reverse {
+    grid-template-columns: 1fr;
+  }
+  .split-head,
+  .split.reverse .split-head {
+    position: static;
+    order: 0;
+  }
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+  .edu-media {
+    min-height: 260px;
+  }
+}
+
+/* ---- Tablet: tighten nav spacing before it collapses ---- */
+@media (max-width: 1080px) {
+  .main-nav ul {
+    gap: 24px;
+  }
+  .main-nav a {
+    font-size: 13.5px;
+  }
+  .header-inner {
+    gap: 20px;
+  }
+  .header-cta {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
+
+/* ---- ≤900: hamburger overlay menu · collabs → wrapped row ·
+        moments → native touch scroll · 44px tap targets ---- */
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: flex;
+    width: 44px;
+    height: 44px;
+    padding: 6px;
+  }
+  .header-cta {
+    display: none;
+  }
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* The line-slide reveal (which needed the clip mask) doesn't run ≤900, so a
+     wrapped headline can safely show in full instead of being cut off. */
+  .hero-title,
+  .hero-title .line {
+    overflow: visible;
+  }
+
+  /* Hero: drop the two-column split → copy stacked over the image, re-centred. */
+  .hero {
+    min-height: auto;
+    align-items: center;
+    padding: calc(var(--header-h) + 28px) 0 56px;
+    text-align: center;
+  }
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: clamp(26px, 6vw, 42px);
+    padding: 0 24px;
+  }
+  .hero-inner {
+    align-items: center;
+  }
+  .hero-actions {
+    justify-content: center;
+  }
+  /* Stacked layout is centred, so the desktop right-edge bleed is cancelled. */
+  .hero-media {
+    --hero-bleed: 0px;
+    width: 100%;
+    max-width: min(560px, 92%);
+    margin: 0 auto;
+  }
+  .hero-media img {
+    max-height: 52svh;
+  }
+  .hero .scroll-cue {
+    display: none;
+  }
+
+  .main-nav {
+    position: fixed;
+    inset: 0;
+    background: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.45s var(--ease),
+      visibility 0.45s var(--ease);
+  }
+  .main-nav::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 700px;
+    height: 700px;
+    max-width: 150vw;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle,
+      rgba(var(--color-primary-rgb), 0.22) 0%,
+      rgba(var(--color-primary-rgb), 0) 65%
+    );
+    pointer-events: none;
+  }
+  .main-nav.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .main-nav ul {
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+  }
+  .main-nav li {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.5s var(--ease),
+      transform 0.5s var(--ease);
+  }
+  .main-nav.is-open li {
+    opacity: 1;
+    transform: none;
+  }
+  .main-nav.is-open li:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+  .main-nav.is-open li:nth-child(2) {
+    transition-delay: 0.16s;
+  }
+  .main-nav.is-open li:nth-child(3) {
+    transition-delay: 0.22s;
+  }
+  .main-nav.is-open li:nth-child(4) {
+    transition-delay: 0.28s;
+  }
+  .main-nav.is-open li:nth-child(5) {
+    transition-delay: 0.34s;
+  }
+  .main-nav.is-open li:nth-child(6) {
+    transition-delay: 0.4s;
+  }
+
+  .main-nav a {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 8vw, 44px);
+    font-weight: 600;
+    color: var(--color-text);
+    padding: 6px 0;
+  }
+  .main-nav a::after {
+    height: 2px;
+  }
+
+  .site-header {
+    z-index: 200;
+  }
+  .site-header.is-hidden {
+    transform: none;
+  }
+  .logo {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Collaborations: replace the absolute scatter (which can overflow on
+     tablets) with a centred wrapped row; JS also skips its scroll animation. */
+  .collabs-stage {
+    min-height: auto;
+    flex-direction: column;
+    gap: 28px;
+    padding: 8px 20px 0;
+  }
+  .collabs-giant {
+    font-size: clamp(28px, 8vw, 40px);
+  }
+  .collabs-cloud {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .collabs-pill {
+    position: static;
+    opacity: 1;
+    transform: none;
+    padding: 14px 26px;
+    font-size: 14px;
+  }
+  .collabs-pill--logo {
+    padding: 12px 22px;
+  }
+  .collabs-pill--logo img {
+    height: 52px;
+  }
+
+  /* Moments: same auto-advancing, swipeable strip on mobile, just smaller
+     slides. Native touch-swipe scrubs it; it resumes on its own. */
+  .moments {
+    overflow: hidden;
+  }
+  .moments-track {
+    padding: 4px 0 20px;
+  }
+  .moment-slide {
+    flex-basis: clamp(220px, 66vw, 300px);
+    height: clamp(200px, 52vw, 270px);
+  }
+}
+
+/* Lock page scroll while the overlay menu is open */
+body.nav-open {
+  overflow: hidden;
+}
+
+/* ---- ≤768: tablet grid tuning ---- */
+@media (max-width: 768px) {
+  .section {
+    padding: 100px 0;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px 20px;
+    padding: 44px 24px;
+  }
+}
+
+/* ---- ≤640: phones, multi-column grids collapse to one column ---- */
+@media (max-width: 640px) {
+  .section {
+    padding: 84px 0;
+  }
+  .container {
+    padding: 0 20px;
+  }
+  .header-inner {
+    padding: 0 20px;
+  }
+
+  .hero-title {
+    font-size: clamp(31px, 8.4vw, 50px);
+  }
+  .hero-sub {
+    font-size: 16px;
+  }
+
+  .work-grid,
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 34px 20px;
+  }
+
+  .work-group-title {
+    margin: 40px 0 20px;
+  }
+  .event-row {
+    grid-template-columns: 52px 1fr;
+    gap: 16px;
+  }
+  .event-tag {
+    display: none;
+  }
+  .quote-card {
+    padding: 26px;
+  }
+
+  /* Footer stacks: CTA, then the two columns side by side beneath it. */
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-cta {
+    grid-column: 1 / -1;
+  }
+  .footer-col-note {
+    max-width: none;
+  }
+  /* 44px tap height for footer links */
+  .footer-links a,
+  .footer-contact {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ---- ≤430: large phones, hero + full-width buttons ---- */
+@media (max-width: 430px) {
+  .hero {
+    padding: calc(var(--header-h) + 24px) 0 64px;
+  }
+  .hero-content {
+    padding: 0 20px;
+  }
+  /* Let the long headline wrap instead of clipping inside the reveal mask. */
+  .hero-title {
+    font-size: clamp(30px, 9vw, 44px);
+    overflow: visible;
+  }
+  .hero-title .line {
+    overflow: visible;
+  }
+  .hero-inner .eyebrow {
+    margin-bottom: 18px;
+  }
+  .hero-sub {
+    margin-top: 22px;
+    font-size: 15.5px;
+  }
+  .hero-actions {
+    margin-top: 30px;
+    width: 100%;
+    flex-direction: column;
+  }
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .stat-num {
+    font-size: clamp(42px, 13vw, 54px);
+  } /* stay big when 1-column */
+  .value-card,
+  .team-card {
+    padding: 24px;
+  }
+  .quote-card {
+    padding: 22px;
+  }
+
+  .footer-contacts {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* ---- ≤375: small phones (iPhone SE), final tightening ---- */
+@media (max-width: 375px) {
+  .container {
+    padding: 0 16px;
+  }
+  .header-inner {
+    padding: 0 16px;
+  }
+  .hero-content {
+    padding: 0 16px;
+  }
+  .collabs-pill--logo {
+    padding: 10px 16px;
+  }
+  .collabs-pill--logo img {
+    height: 42px;
+  }
+}
+
+/* Reduced-motion: only the DESKTOP scatter needs its centred transform; on
+   <=900 the pills are laid out statically, so don't force it there. */
+@media (prefers-reduced-motion: reduce) and (min-width: 901px) {
+  .collabs-pill {
+    opacity: 1;
+    transform: translate(-50%, -50%) !important;
+  }
+}
+
+/* ==========================================================================
+   Team page (team.html): roster of leadership + verticals
+   ========================================================================== */
+.team-hero {
+  padding: calc(var(--header-h) + clamp(48px, 10vh, 112px)) 0
+    clamp(36px, 6vw, 64px);
+  position: relative;
+}
+.team-hero-title {
+  font-size: clamp(46px, 9vw, 118px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 14px 0 22px;
+}
+.team-hero-sub {
+  max-width: 660px;
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--color-text-muted);
+}
+.team-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+/* Each pill carries its section's accent in --v (set inline in team.html), so
+   the jump nav previews the color-coding used further down the page. At rest
+   the pills stay near-neutral; hover and keyboard focus bring the accent up. */
+.team-jump a {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: 1.5px solid
+    color-mix(in srgb, var(--v, var(--color-primary)) 34%, var(--color-border));
+  border-radius: 100px;
+  color: var(--color-text);
+  background: color-mix(
+    in srgb,
+    var(--v, var(--color-primary)) 5%,
+    transparent
+  );
+  transition:
+    color 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    background 0.3s var(--ease),
+    transform 0.3s var(--ease),
+    box-shadow 0.3s var(--ease);
+}
+.team-jump a:hover,
+.team-jump a:focus-visible {
+  color: var(--v, var(--color-primary));
+  border-color: var(--v, var(--color-primary));
+  background: color-mix(
+    in srgb,
+    var(--v, var(--color-primary)) 12%,
+    transparent
+  );
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px
+    color-mix(in srgb, var(--v, var(--color-primary)) 22%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team-jump a:hover,
+  .team-jump a:focus-visible {
+    transform: none;
+  }
+}
+
+.roster {
+  padding: clamp(46px, 7vw, 84px) 0;
+  position: relative;
+  scroll-margin-top: calc(
+    var(--header-h) + 16px
+  ); /* clear the fixed header on #anchor jumps */
+}
+.roster-head {
+  margin-bottom: clamp(26px, 4vw, 42px);
+}
+.roster-head .team-badge {
+  margin-bottom: 16px;
+}
+.roster-head .section-sub {
+  max-width: 620px;
+  margin-top: 12px;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: clamp(18px, 2.4vw, 30px);
+}
+.member {
+  margin: 0;
+}
+.member-photo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  overflow: hidden;
+  /* Accent-tinted rather than the flat 12% neutral, so each card reads as part
+     of its vertical instead of dissolving into the light ground. */
+  border: 1.5px solid
+    color-mix(in srgb, var(--m, var(--color-primary)) 28%, var(--color-border));
+  background:
+    radial-gradient(
+      120% 120% at 30% 18%,
+      color-mix(in srgb, var(--m, var(--color-primary)) 32%, transparent),
+      transparent 62%
+    ),
+    var(--color-bg-alt);
+  transition:
+    transform 0.5s var(--ease),
+    border-color 0.4s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+/* corner dot flags a placeholder avatar (hidden once a real photo is dropped in) */
+.member-photo::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: color-mix(
+    in srgb,
+    var(--m, var(--color-primary)) 82%,
+    transparent
+  );
+  opacity: 0.7;
+}
+.member-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.member-photo:has(img)::after,
+.member-photo:has(img) .member-ini {
+  display: none;
+}
+.member-ini {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(26px, 4.4vw, 40px);
+  letter-spacing: 0.02em;
+  color: color-mix(
+    in srgb,
+    var(--m, var(--color-primary)) 72%,
+    var(--color-text)
+  );
+}
+.member:hover .member-photo {
+  transform: translateY(-6px);
+  border-color: color-mix(
+    in srgb,
+    var(--m, var(--color-primary)) 55%,
+    var(--color-border)
+  );
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.12);
+}
+.member figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 14px;
+}
+.member-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(16px, 1.5vw, 19px);
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+.member-role {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+/* Every member, including the director, renders at the same uniform size. */
+.member--lead {
+  grid-column: auto;
+}
+
+@media (max-width: 640px) {
+  .member-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+@media (max-width: 430px) {
+  .member-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}

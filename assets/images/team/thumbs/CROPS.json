@@ -1,0 +1,84 @@
+{
+  "nizam.jpg": {
+    "face_x": 0.5,
+    "face_y": 0.21,
+    "side_frac_of_height": 0.4182,
+    "note": "face centred in crop"
+  },
+  "ghanashyam.jpg": {
+    "face_x": 0.44,
+    "face_y": 0.33,
+    "side_frac_of_height": 0.6588,
+    "note": "face centred in crop"
+  },
+  "aman-fathima.jpg": {
+    "face_x": 0.52,
+    "face_y": 0.33,
+    "side_frac_of_height": 0.66,
+    "note": "face centred in crop"
+  },
+  "ikram.jpg": {
+    "face_x": 0.35,
+    "face_y": 0.4,
+    "side_frac_of_height": 0.7,
+    "note": "face centred in crop"
+  },
+  "vijay.jpg": {
+    "face_x": 0.57,
+    "face_y": 0.43,
+    "side_frac_of_height": 0.7195,
+    "note": "face centred in crop"
+  },
+  "sahal-m-k.jpg": {
+    "face_x": 0.48,
+    "face_y": 0.32,
+    "side_frac_of_height": 0.639,
+    "note": "face centred in crop"
+  },
+  "shejin.jpg": {
+    "face_x": 0.43,
+    "face_y": 0.25,
+    "side_frac_of_height": 0.3184,
+    "note": "face centred in crop"
+  },
+  "harigovind.jpg": {
+    "face_x": 0.42,
+    "face_y": 0.22,
+    "side_frac_of_height": 0.4383,
+    "note": "face centred in crop"
+  },
+  "abinav.jpg": {
+    "face_x": 0.5,
+    "face_y": 0.57,
+    "side_frac_of_height": 0.3593,
+    "note": "face centred in crop"
+  },
+  "madhav-pradeep.jpg": {
+    "face_x": 0.42,
+    "face_y": 0.4,
+    "side_frac_of_height": 0.6477,
+    "size": 128,
+    "note": "face centred in crop"
+  },
+  "anfas-nujum.jpg": {
+    "face_x": 0.55,
+    "face_y": 0.34,
+    "side_frac_of_height": 0.44,
+    "size": 128,
+    "note": "face centred in crop"
+  },
+  "aadil.jpg": {
+    "face_x": 0.5,
+    "face_y": 0.42,
+    "side_frac_of_height": 0.75,
+    "size": 128,
+    "note": "face centred in crop"
+  },
+  "devanarayanan-v-s.jpg": {
+    "face_x": 0.66,
+    "face_y": 0.42,
+    "side_frac_of_height": 0.6993,
+    "size": 128,
+    "note": "face centred in crop"
+  }
+}

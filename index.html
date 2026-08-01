@@ -1,0 +1,1267 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tensors | Tech Consultancy Born Out of IIT Madras</title>
+    <meta
+      name="description"
+      content="Tensors is a student-run tech consultancy at IIT Madras, building real products for real clients and driving social impact through technology."
+    />
+
+    <!-- Type system:
+     · Cabinet Grotesk: bold geometric display for headlines (Fontshare)
+     · Switzer: clean neutral grotesk for body/UI (Fontshare)
+     · Space Mono: monospace for technical labels, eyebrows & numbers (Google) -->
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800,900&f[]=switzer@400,500,600,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" href="assets/logos/tensors-mark.png" />
+
+    <!-- Light is the default theme; only honour an explicit saved 'dark' choice.
+     Runs before first paint to avoid a flash. -->
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("tensors-theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+          }
+        } catch (e) {}
+
+        /* The launch animation is a first-impression, not something to sit
+           through on every visit. Once it has played, this flag makes later
+           loads in the same session (coming back from Team, a refresh, a
+           back-button) skip it and go straight to the hero. Set here, before
+           first paint, so the panel never flashes up before main.js runs. */
+        try {
+          if (sessionStorage.getItem("tensors-launched") === "1") {
+            document.documentElement.classList.add("has-launched");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="is-loading">
+    <!-- ============ PRELOADER / LAUNCH ANIMATION ============ -->
+    <div class="preloader" id="preloader">
+      <div class="pre-grid" aria-hidden="true"></div>
+
+      <div class="pre-stage">
+        <div class="pre-logo" aria-hidden="true">
+          <img
+            src="assets/logos/tensors-mark.png"
+            alt=""
+            class="pre-logo-img"
+          />
+        </div>
+        <img
+          src="assets/logos/tensors-logo.png"
+          alt="Tensors"
+          class="pre-wordmark"
+        />
+        <div class="pre-rotator" aria-hidden="true">
+          <span id="pre-rotator">Strategy</span>
+        </div>
+      </div>
+
+      <div class="pre-foot">
+        <div class="pre-meta">
+          <span class="pre-status" id="pre-status">Initializing</span>
+          <span class="pre-count"><span id="pre-count">0</span><i>%</i></span>
+        </div>
+        <div class="pre-bar"><i id="pre-bar-fill"></i></div>
+      </div>
+    </div>
+
+    <!-- ============ HEADER ============ -->
+    <header class="site-header" id="site-header">
+      <div class="header-inner">
+        <a href="#top" class="logo" aria-label="Tensors home">
+          <img src="assets/logos/tensors-mark.png" alt="" class="logo-mark" />
+          <img
+            src="assets/logos/tensors-logo.png"
+            alt="Tensors"
+            class="logo-word"
+          />
+        </a>
+
+        <nav class="main-nav" id="main-nav">
+          <ul>
+            <li><a href="#top">Home</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#work">Projects</a></li>
+            <li><a href="team.html">Team</a></li>
+            <li><a href="#edu">Tensors-Edu</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+
+        <a href="#contact" class="btn btn-primary header-cta">
+          <span class="swap"
+            ><span class="swap-line">Get In Touch</span
+            ><span class="swap-line" aria-hidden="true"
+              >Get In Touch</span
+            ></span
+          >
+        </a>
+
+        <button
+          class="theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="Switch to dark theme"
+          aria-pressed="false"
+          title="Toggle light / dark"
+        >
+          <svg
+            class="theme-icon theme-icon--sun"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <circle cx="12" cy="12" r="4.2" />
+            <path
+              d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"
+            />
+          </svg>
+          <svg
+            class="theme-icon theme-icon--moon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="currentColor"
+          >
+            <path
+              d="M20.5 14.2A8.2 8.2 0 0 1 9.8 3.5a8.3 8.3 0 1 0 10.7 10.7Z"
+            />
+          </svg>
+        </button>
+
+        <button
+          class="nav-toggle"
+          id="nav-toggle"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="hero-glow"></div>
+        <div class="hero-glow-2"></div>
+        <div class="hero-grid"></div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-inner">
+          <p class="eyebrow" data-anim="eyebrow">
+            [ IIT MADRAS &middot; STUDENT-RUN CONSULTANCY ]
+          </p>
+
+          <h1 class="hero-title">
+            <span class="line" data-anim="line">Tech Consultancy</span>
+            <span class="line" data-anim="line"
+              >Born Out of <span class="accent">IIT&nbsp;Madras</span></span
+            >
+          </h1>
+
+          <p class="hero-sub" data-anim="fade">
+            We help innovators and NGOs bring their vision to life by providing
+            technical solutions to their problems.
+          </p>
+
+          <div class="hero-actions" data-anim="fade">
+            <a href="#work" class="btn btn-primary">
+              <span class="swap"
+                ><span class="swap-line">See Our Work</span
+                ><span class="swap-line" aria-hidden="true"
+                  >See Our Work</span
+                ></span
+              >
+            </a>
+            <a href="#about" class="btn btn-ghost">
+              <span class="swap"
+                ><span class="swap-line">About Us</span
+                ><span class="swap-line" aria-hidden="true"
+                  >About Us</span
+                ></span
+              >
+            </a>
+          </div>
+        </div>
+
+        <figure class="hero-media" data-anim="fade">
+          <img
+            src="assets/images/hero-cover.png"
+            alt="Tensors students holding letters that spell TENSORS in a classroom"
+            width="1014"
+            height="611"
+            fetchpriority="high"
+          />
+        </figure>
+      </div>
+
+      <div class="scroll-cue" data-anim="fade" aria-hidden="true">
+        <span>Scroll</span>
+        <div class="scroll-line"><i></i></div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT + VISION ============ -->
+    <section class="section about" id="about">
+      <div class="container split">
+        <div class="split-head" data-reveal>
+          <p class="eyebrow">[ WHO WE ARE ]</p>
+          <h2 class="section-title">
+            A student-run consultancy that ships real products and gives back.
+          </h2>
+        </div>
+
+        <div class="split-body about-body" data-reveal="right">
+          <p>
+            Tensors began as an NGO at IIT Madras and grew into a full-fledged
+            tech consultancy run entirely by students. We take on real client
+            briefs, design and build software end-to-end, and reinvest what we
+            learn into social impact and mentorship.
+          </p>
+
+          <div class="vision-card">
+            <span class="vision-label">Our Vision</span>
+            <p class="vision-text">
+              To build a launchpad where students solve real problems for real
+              people, turning classroom skill into shipped products and lasting
+              impact.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATS STRIP ============ -->
+    <section class="section stats" aria-label="Tensors by the numbers">
+      <div class="container stats-grid">
+        <div class="stat" data-reveal>
+          <div class="stat-num" data-count="2018" data-suffix="">0</div>
+          <p class="stat-label">Founded at IIT Madras</p>
+        </div>
+        <div class="stat" data-reveal>
+          <div class="stat-num" data-count="5000" data-suffix="+">0</div>
+          <p class="stat-label">Students reached</p>
+        </div>
+        <div class="stat" data-reveal>
+          <div class="stat-num" data-count="12" data-suffix="+">0</div>
+          <p class="stat-label">Projects delivered</p>
+        </div>
+        <div class="stat" data-reveal>
+          <div class="stat-num" data-count="3" data-suffix="">0</div>
+          <p class="stat-label">Core verticals</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OUR VALUES ============ -->
+    <section class="section values" id="values">
+      <div class="container split reverse">
+        <div class="split-head" data-reveal>
+          <p class="eyebrow">[ WHAT DRIVES US ]</p>
+          <h2 class="section-title">Our Values</h2>
+          <p class="section-sub">
+            The principles behind every brief we take on.
+          </p>
+        </div>
+
+        <div class="split-body">
+          <div class="values-grid">
+            <article class="value-card" data-reveal="scale">
+              <span class="value-index">01</span>
+              <h3>Learning</h3>
+              <p>
+                Every brief is a chance to learn a new stack, domain, or way of
+                working, all in public and on real deadlines.
+              </p>
+            </article>
+            <article class="value-card" data-reveal="scale">
+              <span class="value-index">02</span>
+              <h3>Mentorship</h3>
+              <p>
+                Seniors guide juniors through their first real client, first
+                deploy, first hard conversation.
+              </p>
+            </article>
+            <article class="value-card" data-reveal="scale">
+              <span class="value-index">03</span>
+              <h3>Social Impact</h3>
+              <p>
+                We choose work that helps people: NGOs, health, education. Not
+                just work that pays.
+              </p>
+            </article>
+            <article class="value-card" data-reveal="scale">
+              <span class="value-index">04</span>
+              <h3>Skill Development</h3>
+              <p>
+                We turn coursework into shipped products, and students into
+                engineers, designers, and leads.
+              </p>
+            </article>
+            <article class="value-card" data-reveal="scale">
+              <span class="value-index">05</span>
+              <h3>Ownership</h3>
+              <p>
+                Every brief is run like it's our own company on the line.
+                Deadlines, quality, and follow-through, no excuses.
+              </p>
+            </article>
+            <article class="value-card" data-reveal="scale">
+              <span class="value-index">06</span>
+              <h3>Innovation</h3>
+              <p>
+                We reach for the best tool for the job, not just the familiar
+                one, and aren't afraid to prototype something new.
+              </p>
+            </article>
+            <article class="value-card" data-reveal="scale">
+              <span class="value-index">07</span>
+              <h3 class="font-special-gothic">Collaboration</h3>
+              <p>
+                Three verticals, one team. Tenlink, Tensci and Tenment work in
+                lockstep on every brief.
+              </p>
+            </article>
+            <article class="value-card" data-reveal="scale">
+              <span class="value-index">08</span>
+              <h3>Client Focus</h3>
+              <p>
+                We build for the people who'll actually use it. Briefs are
+                judged by real outcomes, not just deliverables.
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OUR WORK / PROJECTS ============ -->
+    <section class="section work" id="work">
+      <div class="container split">
+        <div class="split-head" data-reveal>
+          <p class="eyebrow">[ FEATURED CASES ]</p>
+          <h2 class="section-title">Our Work</h2>
+          <p class="section-sub">
+            Real briefs, shipped. Split across consultancy engagements and
+            social-impact initiatives.
+          </p>
+        </div>
+
+        <div class="split-body">
+          <h3 class="work-group-title" data-reveal>
+            <span>Consultancy Work</span>
+          </h3>
+          <div class="work-grid">
+            <article class="work-card" data-reveal="right">
+              <div class="work-media">
+                <img
+                  src="assets/images/our_work/idukki-ministry.jpg"
+                  alt="Idukki Ministry website project"
+                  loading="lazy"
+                  data-parallax
+                />
+              </div>
+              <div class="work-info">
+                <h4>Idukki Ministry Website</h4>
+                <p>Public-facing government/ministry site.</p>
+                <span class="work-tag">Web</span>
+              </div>
+            </article>
+            <article class="work-card" data-reveal="right">
+              <div class="work-media">
+                <img
+                  src="assets/images/our_work/aarogplus.jpg"
+                  alt="AarogPlus healthcare platform website"
+                  loading="lazy"
+                  data-parallax
+                />
+              </div>
+              <div class="work-info">
+                <h4>AarogPlus Website</h4>
+                <p>Healthcare platform website: design &amp; build.</p>
+                <span class="work-tag">Web</span>
+              </div>
+            </article>
+
+            <article class="work-card" data-reveal="right">
+              <div class="work-media">
+                <img
+                  src="assets/images/our_work/imprints.jpg"
+                  alt="Imprints brand website"
+                  loading="lazy"
+                  data-parallax
+                />
+              </div>
+              <div class="work-info">
+                <h4>Imprints Website</h4>
+                <p>Brand website design and development.</p>
+                <span class="work-tag">Web</span>
+              </div>
+            </article>
+            <article class="work-card" data-reveal="right">
+              <div class="work-media">
+                <img
+                  src="assets/images/our_work/nav-sahyog.jpg"
+                  alt="Nav Sahyog mobile application"
+                  loading="lazy"
+                  data-parallax
+                />
+              </div>
+              <div class="work-info">
+                <h4>Nav Sahyog App</h4>
+                <p>Mobile application: product &amp; engineering.</p>
+                <span class="work-tag">Mobile</span>
+              </div>
+            </article>
+          </div>
+
+          <h3 class="work-group-title" data-reveal>
+            <span>Social Impact Work</span>
+          </h3>
+          <div class="work-grid">
+            <article class="work-card" data-reveal="right">
+              <div class="work-media">
+                <img
+                  src="assets/images/our_work/decov.jpg"
+                  alt="Decov COVID-response initiative"
+                  loading="lazy"
+                  data-parallax
+                />
+              </div>
+              <div class="work-info">
+                <h4>Decov</h4>
+                <p>COVID-response initiative.</p>
+                <span class="work-tag">Impact</span>
+              </div>
+            </article>
+            <article class="work-card" data-reveal="right">
+              <div class="work-media">
+                <img
+                  src="assets/images/our_work/sos-village.jpg"
+                  alt="SOS Village initiative"
+                  loading="lazy"
+                  data-parallax
+                />
+              </div>
+              <div class="work-info">
+                <h4>SOS Village</h4>
+                <p>School Technical Workshops</p>
+                <span class="work-tag">Event</span>
+              </div>
+            </article>
+            <article class="work-card" data-reveal="right">
+              <div class="work-media">
+                <img
+                  src="assets/images/our_work/josaa.jpg"
+                  alt="JoSAA counselling session"
+                  loading="lazy"
+                  data-parallax
+                />
+              </div>
+              <div class="work-info">
+                <h4>JoSAA Counselling</h4>
+                <p>Admissions guidance for aspirants.</p>
+                <span class="work-tag">Mentorship</span>
+              </div>
+            </article>
+            <article class="work-card" data-reveal="right">
+              <div class="work-media">
+                <img
+                  src="assets/images/our_work/finance-workshop.jpg"
+                  alt="Finance workshop with Shaastra"
+                  loading="lazy"
+                  data-parallax
+                />
+              </div>
+              <div class="work-info">
+                <h4>Finance Workshop</h4>
+                <p>Delivered with Shaastra.</p>
+                <span class="work-tag">Workshop</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MOMENTS SLIDER ============ -->
+    <section class="section moments" id="moments">
+      <div class="container section-head" data-reveal>
+        <p class="eyebrow">[ ON THE GROUND ]</p>
+        <h2 class="section-title">Moments</h2>
+        <p class="section-sub">
+          The parts that don't make it into the pitch deck.
+        </p>
+      </div>
+
+      <div class="moments-track" id="moments-track">
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-01.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 1</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-02.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 2</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-03.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 3</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-04.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 4</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-05.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 5</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-06.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 6</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-07.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 7</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-08.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 8</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-09.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 9</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-10.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 10</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-11.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 11</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-19.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 12</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-13.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 13</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-14.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 14</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-20.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 15</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-16.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 16</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-17.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 17</span>
+        </div>
+        <div class="ph moment-slide">
+          <img
+            src="assets/images/moments/moment-18.jpg"
+            alt="Tensors moment"
+            loading="lazy"
+            onerror="this.remove()"
+          /><span>Moment 18</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ OUR TEAM ============ -->
+    <section class="section team" id="team">
+      <div class="container split reverse">
+        <div class="split-head" data-reveal>
+          <p class="eyebrow">[ THREE VERTICALS ]</p>
+          <h2 class="section-title">Our Team</h2>
+          <p class="section-sub">
+            One org, three engines: relationships, technology, and mentorship.
+          </p>
+          <a href="team.html" class="btn btn-ghost team-viewall">
+            <span class="swap"
+              ><span class="swap-line">Meet the full team</span
+              ><span class="swap-line" aria-hidden="true"
+                >Meet the full team</span
+              ></span
+            >
+          </a>
+        </div>
+
+        <div class="split-body">
+          <div class="team-grid">
+            <a
+              class="team-card"
+              href="team.html#tenlink"
+              data-reveal="left"
+              aria-label="View the Tenlink team"
+            >
+              <div class="team-card-top" style="--v: var(--color-tenlink)">
+                <span class="team-badge">Tenlink</span>
+                <h3>PR &amp; Corporate Relations</h3>
+              </div>
+              <p>
+                Client, NGO and corporate relationships, branding, outreach and
+                funding. Builds partnerships that turn into real projects from
+                hospitals and NGOs to institutions and government bodies. Runs
+                the Tensors Podcast, drives social campaigns, and grows
+                visibility for Tensors both inside and outside IIT Madras.
+              </p>
+              <span class="team-people team-people-link">
+                <span class="team-avatars" style="--m: var(--color-tenlink)">
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/nizam.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />NI</span
+                  >
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/ghanashyam.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />GH</span
+                  >
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/aman-fathima.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />AF</span
+                  >
+                  <span class="team-ini team-ini--more">+6</span>
+                </span>
+                <span class="people-cta"
+                  >View team <span aria-hidden="true">&rarr;</span></span
+                >
+              </span>
+            </a>
+
+            <a
+              class="team-card"
+              href="team.html#tensci"
+              data-reveal="left"
+              aria-label="View the Tensci team"
+            >
+              <div class="team-card-top" style="--v: var(--color-tensci)">
+                <span class="team-badge">Tensci</span>
+                <h3>Technology</h3>
+              </div>
+              <p>
+                The tech powerhouse behind Tensors. Builds and ships websites,
+                apps, and AI/ML-driven solutions for real clients, while
+                managing every platform Tensors runs on. Also mentors juniors
+                into tech competitions and keeps the team's technical skills
+                sharp year over year.
+              </p>
+              <span class="team-people team-people-link">
+                <span class="team-avatars" style="--m: var(--color-tensci)">
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/ikram.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />IK</span
+                  >
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/vijay.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />VI</span
+                  >
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/sahal-m-k.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />SM</span
+                  >
+                  <span class="team-ini team-ini--more">+2</span>
+                </span>
+                <span class="people-cta"
+                  >View team <span aria-hidden="true">&rarr;</span></span
+                >
+              </span>
+            </a>
+
+            <a
+              class="team-card"
+              href="team.html#tenment"
+              data-reveal="left"
+              aria-label="View the Tenment team"
+            >
+              <div class="team-card-top" style="--v: var(--color-tenment)">
+                <span class="team-badge">Tenment</span>
+                <h3>Exam &amp; Mentorship</h3>
+              </div>
+              <p>
+                Runs JEE mock tests, Olympiad prep, and JoSAA counselling for
+                thousands of students every year. Also manages the Tensors LMS
+                and the Career Guidance & Mentorship portal offering one-on-one
+                academic and emotional support to high schoolers on a monthly
+                basis.
+              </p>
+              <span class="team-people team-people-link">
+                <span class="team-avatars" style="--m: var(--color-tenment)">
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/shejin.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />SH</span
+                  >
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/harigovind.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />HA</span
+                  >
+                  <span class="team-ini"
+                    ><img
+                      src="assets/images/team/thumbs/abinav.jpg"
+                      alt=""
+                      loading="lazy"
+                      onerror="this.remove()"
+                    />AB</span
+                  >
+                  <span class="team-ini team-ini--more">+1</span>
+                </span>
+                <span class="people-cta"
+                  >View team <span aria-hidden="true">&rarr;</span></span
+                >
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TENSORS-EDU ============ -->
+    <section class="section edu" id="edu">
+      <div class="container split">
+        <div class="split-head" data-reveal>
+          <p class="eyebrow">[ TENSORS-EDU ]</p>
+          <h2 class="section-title">
+            Education, built by students who just did it.
+          </h2>
+          <p class="section-sub">
+            Our Tenment vertical runs a growing education stack, from exam prep
+            to career mentorship, powered by people who cracked the same exams
+            recently.
+          </p>
+        </div>
+        <div class="split-body edu-body" data-reveal="right">
+          <div class="edu-media">
+            <img
+              src="assets/images/our_work/lms.jpg"
+              alt="The Tensors LMS course dashboard"
+              loading="lazy"
+            />
+          </div>
+          <ul class="edu-list">
+            <li>
+              <span>JEE Mock Tests</span> Full-length, exam-accurate practice.
+            </li>
+            <li>
+              <span>Olympiad Prep</span> Structured problem sets and guidance.
+            </li>
+            <li>
+              <span>JoSAA Counselling</span> Choice-filling and admissions
+              support.
+            </li>
+            <li>
+              <span>Tensors LMS</span> Courses, tracking, and the mentorship
+              portal.
+            </li>
+          </ul>
+          <a
+            href="https://edu.tensors.in/"
+            class="btn btn-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Explore Tensors-Edu (opens in a new tab)"
+          >
+            <span class="swap"
+              ><span class="swap-line">Explore Tensors-Edu</span
+              ><span class="swap-line" aria-hidden="true"
+                >Explore Tensors-Edu</span
+              ></span
+            >
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SOCIAL EVENTS ============ -->
+    <section class="section events" id="events">
+      <div class="container split reverse">
+        <div class="split-head" data-reveal>
+          <p class="eyebrow">[ COMMUNITY ]</p>
+          <h2 class="section-title">Social Events</h2>
+          <p class="section-sub">
+            Workshops, ideathons and drives we've organised and hosted.
+          </p>
+        </div>
+
+        <div class="split-body">
+          <div class="events-list">
+            <div class="event-row" data-reveal="left">
+              <span class="event-year">2024</span>
+              <div class="event-body">
+                <h4>Finance Workshop &times; Shaastra</h4>
+                <p>Hands-on personal-finance workshop for students.</p>
+              </div>
+              <span class="event-tag">Workshop</span>
+            </div>
+            <div class="event-row" data-reveal="left">
+              <span class="event-year">2023</span>
+              <div class="event-body">
+                <h4>De-Cov Ideathon &times; IMA Kerala</h4>
+                <p>Ideathon tackling post-COVID public-health challenges.</p>
+              </div>
+              <span class="event-tag">Ideathon</span>
+            </div>
+            <div class="event-row" data-reveal="left">
+              <span class="event-year">2023</span>
+              <div class="event-body">
+                <h4>JoSAA Counselling Drive</h4>
+                <p>Free admissions counselling for JEE aspirants.</p>
+              </div>
+              <span class="event-tag">Outreach</span>
+            </div>
+            <div class="event-row" data-reveal="left">
+              <span class="event-year">2022</span>
+              <div class="event-body">
+                <h4>Decov Campaign</h4>
+                <p>Community COVID-response initiative.</p>
+              </div>
+              <span class="event-tag">Drive</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COLLABORATIONS ============ -->
+    <section class="section collabs" id="collabs">
+      <div class="container">
+        <p class="eyebrow" data-reveal>[ TRUSTED BY ]</p>
+      </div>
+
+      <div class="collabs-stage">
+        <h2
+          class="collabs-giant font-special-gothic"
+          data-ghost="COLLABORATIONS"
+        >
+          OUR COLLABORATIONS
+        </h2>
+
+        <div class="collabs-cloud" id="collabs-cloud">
+          <!-- Ring around the title: 4 above, 4 below, so the central band
+           stays clear and nothing overlaps the heading. -->
+          <div
+            class="collabs-pill collabs-pill--logo collabs-pill--white-bg"
+            style="
+              --x: clamp(-470px, -36vw, -330px);
+              --y: clamp(-235px, -19vw, -155px);
+              --s: 1.05;
+            "
+          >
+            <img
+              src="assets/logos/collaborators/ima.jpg"
+              alt="Indian Medical Association"
+              loading="lazy"
+            />
+          </div>
+          <div
+            class="collabs-pill collabs-pill--logo collabs-pill--white-bg"
+            style="
+              --x: clamp(-190px, -14vw, -120px);
+              --y: clamp(-310px, -26vw, -215px);
+              --s: 1;
+            "
+          >
+            <img
+              src="assets/logos/collaborators/shaastra.jpg"
+              alt="Shaastra"
+              loading="lazy"
+            />
+          </div>
+          <div
+            class="collabs-pill collabs-pill--logo collabs-pill--white-bg"
+            style="
+              --x: clamp(120px, 14vw, 190px);
+              --y: clamp(-310px, -26vw, -215px);
+              --s: 1;
+            "
+          >
+            <img
+              src="assets/logos/collaborators/idukki-ministry.jpg"
+              alt="Idukki Ministry"
+              loading="lazy"
+            />
+          </div>
+          <div
+            class="collabs-pill collabs-pill--logo collabs-pill--white-bg"
+            style="
+              --x: clamp(330px, 36vw, 470px);
+              --y: clamp(-235px, -19vw, -155px);
+              --s: 1.05;
+            "
+          >
+            <img
+              src="assets/logos/collaborators/eduport.jpg"
+              alt="Eduport"
+              loading="lazy"
+            />
+          </div>
+          <div
+            class="collabs-pill collabs-pill--logo collabs-pill--white-bg"
+            style="
+              --x: clamp(-470px, -36vw, -330px);
+              --y: clamp(180px, 17vw, 245px);
+              --s: 1;
+            "
+          >
+            <img
+              src="assets/logos/collaborators/sos.jpg"
+              alt="SOS Children's Villages"
+              loading="lazy"
+            />
+          </div>
+          <div
+            class="collabs-pill collabs-pill--logo collabs-pill--white-bg"
+            style="
+              --x: clamp(-190px, -14vw, -120px);
+              --y: clamp(250px, 23vw, 320px);
+              --s: 1.05;
+            "
+          >
+            <img
+              src="assets/logos/collaborators/bhaavam.jpg"
+              alt="Bhaavam"
+              loading="lazy"
+            />
+          </div>
+          <div
+            class="collabs-pill collabs-pill--logo collabs-pill--white-bg"
+            style="
+              --x: clamp(120px, 14vw, 190px);
+              --y: clamp(250px, 23vw, 320px);
+              --s: 1.05;
+            "
+          >
+            <img
+              src="assets/logos/collaborators/mtm.jpg"
+              alt="Mother Theresa Memorial"
+              loading="lazy"
+            />
+          </div>
+          <div
+            class="collabs-pill collabs-pill--logo collabs-pill--white-bg"
+            style="
+              --x: clamp(330px, 36vw, 470px);
+              --y: clamp(180px, 17vw, 245px);
+              --s: 1;
+            "
+          >
+            <img
+              src="assets/logos/collaborators/mvm.jpg"
+              alt="MVM"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MESSAGE FROM DIRECTOR ============ -->
+    <section class="section director" id="director">
+      <div class="container split reverse">
+        <div class="split-head" data-reveal>
+          <p class="eyebrow">[ DIRECTOR&rsquo;S MESSAGE ]</p>
+          <h2 class="section-title">What our leaders say</h2>
+        </div>
+        <div class="split-body">
+          <div class="quote-grid">
+            <figure class="quote-card" data-reveal="left">
+              <span class="avatar avatar-lg quote-avatar">
+                <img
+                  src="assets/images/team/thumbs/madhav-pradeep.jpg"
+                  alt=""
+                  loading="lazy"
+                  onerror="this.remove()"
+                />
+              </span>
+              <blockquote>
+                &ldquo;Tensors is a state of mind where our creativity is aimed
+                at the problems everyone else walks past. Technology isn&rsquo;t
+                the goal here; the gap it closes is.&rdquo;
+              </blockquote>
+              <figcaption>
+                <strong>Madhav Pradeep</strong><span>Director</span>
+              </figcaption>
+            </figure>
+
+            <figure class="quote-card" data-reveal="left">
+              <span class="avatar avatar-lg quote-avatar">
+                <img
+                  src="assets/images/team/thumbs/anfas-nujum.jpg"
+                  alt=""
+                  loading="lazy"
+                  onerror="this.remove()"
+                />
+              </span>
+              <blockquote>
+                &ldquo;To build an ecosystem for change, where each individual
+                adds value to themselves and the society simultaneously.
+                That&rsquo;s what drove us towards Tensors.&rdquo;
+              </blockquote>
+              <figcaption>
+                <strong>Anfas Nujum</strong
+                ><span>Founder &amp; Advisory Board Member</span>
+              </figcaption>
+            </figure>
+
+            <figure class="quote-card" data-reveal="left">
+              <span class="avatar avatar-lg quote-avatar">
+                <img
+                  src="assets/images/team/thumbs/aadil.jpg"
+                  alt=""
+                  loading="lazy"
+                  onerror="this.remove()"
+                />
+              </span>
+              <blockquote>
+                &ldquo;Growth blooms in the fertile ground of shared vision and
+                raw talent. Together, we build something extraordinary.&rdquo;
+              </blockquote>
+              <figcaption>
+                <strong>Aadil</strong><span>Advisory Board Member</span>
+              </figcaption>
+            </figure>
+
+            <figure class="quote-card" data-reveal="left">
+              <span class="avatar avatar-lg quote-avatar">
+                <img
+                  src="assets/images/team/thumbs/devanarayanan-v-s.jpg"
+                  alt=""
+                  loading="lazy"
+                  onerror="this.remove()"
+                />
+              </span>
+              <blockquote>
+                &ldquo;We believe that technology&rsquo;s truest power is not in
+                what it creates, but in what it awakens, the courage to grow,
+                the will to lead and the compassion to make a difference.&rdquo;
+              </blockquote>
+              <figcaption>
+                <strong>Devanarayanan V S</strong
+                ><span>Advisory Board Member</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="site-footer" id="contact">
+      <div class="container footer-top">
+        <div class="footer-cta" data-reveal>
+          <p class="eyebrow">[ LET'S BUILD SOMETHING ]</p>
+          <h2 class="section-title">Have a brief? Let's talk.</h2>
+          <p class="section-sub">
+            Client projects, collaborations, or joining Tensors. Reach out.
+          </p>
+          <a
+            href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tensorsofficial@gmail.com&amp;su=Interested%20in%20Tensors&amp;body=Hi%20Tensors%2C%0A%0AI%20came%20across%20your%20website%20and%20I%20would%20love%20to%20know%20more%20about%20the%20work%20you%20do%2C%20and%20how%20I%20could%20get%20involved%20with%20the%20initiative.%0A%0AA%20little%20about%20me%3A%0A%0A%0AWhat%20I%20would%20like%20to%20help%20with%20%2F%20know%20more%20about%3A%0A%0A%0ALooking%20forward%20to%20hearing%20from%20you.%0A%0AThanks%2C%0A"
+            class="btn btn-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Email Tensors at tensorsofficial@gmail.com (opens a pre-filled Gmail message in a new tab)"
+          >
+            <span class="swap"
+              ><span class="swap-line">tensorsofficial@gmail.com</span
+              ><span class="swap-line" aria-hidden="true"
+                >tensorsofficial@gmail.com</span
+              ></span
+            >
+          </a>
+        </div>
+
+        <nav class="footer-col" data-reveal aria-label="Footer navigation">
+          <h3 class="footer-col-title">Explore</h3>
+          <div class="footer-links">
+            <a href="#about">About</a>
+            <a href="#work">Projects</a>
+            <a href="team.html">Team</a>
+            <a href="#edu">Tensors-Edu</a>
+          </div>
+        </nav>
+
+        <div class="footer-col footer-col--contact" data-reveal>
+          <h3 class="footer-col-title">Contact Us</h3>
+          <p class="footer-col-note">
+            Follow along for new projects, campus events and the Tensors
+            Podcast. Our inbox is open for briefs and collaborations.
+          </p>
+          <div class="footer-socials">
+            <a
+              href="https://www.instagram.com/tensors_official/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Tensors on Instagram (opens in a new tab)"
+              ><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" /></svg></a
+            >
+            <a
+              href="https://www.youtube.com/@tensorsofficial"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="The Tensors Podcast on YouTube (opens in a new tab)"
+              ><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4.2" /><path d="M10.2 9.3v5.4L15 12z" fill="currentColor" stroke="none" /></svg></a
+            >
+            <a
+              href="https://www.linkedin.com/company/tensors/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Tensors on LinkedIn (opens in a new tab)"
+              ><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4" /><line x1="7.4" y1="10.4" x2="7.4" y2="17" /><circle cx="7.4" cy="7.2" r="1.15" fill="currentColor" stroke="none" /><path d="M11.3 17v-3.6a2.5 2.5 0 0 1 5 0V17" /><line x1="11.3" y1="10.4" x2="11.3" y2="17" /></svg></a
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="container footer-contacts" data-reveal>
+        <a class="footer-contact" href="tel:+918129825859"><svg class="contact-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.2 3.5h3l1.5 3.8-2 1.4a12 12 0 0 0 5.6 5.6l1.4-2 3.8 1.5v3a1.8 1.8 0 0 1-2 1.8A15.5 15.5 0 0 1 4.4 5.5a1.8 1.8 0 0 1 1.8-2z" /></svg><span class="contact-name">Madhav Pradeep</span> <span class="contact-value">+91 8129825859</span></a>
+        <a class="footer-contact" href="tel:+918281913830"><svg class="contact-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.2 3.5h3l1.5 3.8-2 1.4a12 12 0 0 0 5.6 5.6l1.4-2 3.8 1.5v3a1.8 1.8 0 0 1-2 1.8A15.5 15.5 0 0 1 4.4 5.5a1.8 1.8 0 0 1 1.8-2z" /></svg><span class="contact-name">Devanarayanan</span> <span class="contact-value">+91 8281913830</span></a>
+        <a
+          class="footer-contact"
+          href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tensorsofficial@gmail.com&amp;su=Interested%20in%20Tensors&amp;body=Hi%20Tensors%2C%0A%0AI%20came%20across%20your%20website%20and%20I%20would%20love%20to%20know%20more%20about%20the%20work%20you%20do%2C%20and%20how%20I%20could%20get%20involved%20with%20the%20initiative.%0A%0AA%20little%20about%20me%3A%0A%0A%0AWhat%20I%20would%20like%20to%20help%20with%20%2F%20know%20more%20about%3A%0A%0A%0ALooking%20forward%20to%20hearing%20from%20you.%0A%0AThanks%2C%0A"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Email Tensors at tensorsofficial@gmail.com (opens a pre-filled Gmail message in a new tab)"
+        ><svg class="contact-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.7" y="4.8" width="18.6" height="14.4" rx="2.6" /><path d="m3.4 7 8.6 6 8.6-6" /></svg><span class="contact-value">tensorsofficial@gmail.com</span></a>
+      </div>
+
+      <p class="container copyright">
+        &copy; <span id="year">2026</span> Tensors, IIT Madras. All rights
+        reserved.
+      </p>
+    </footer>
+
+    <!-- ============ LIBRARIES (CDN) ============ -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>
