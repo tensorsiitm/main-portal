@@ -41,7 +41,14 @@
   --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --container: 1240px;
+  /* One gutter drives .container, .header-inner and .hero-content so the logo,
+     nav and hero copy stay on the same left edge at every width. Re-declared
+     per breakpoint below instead of re-padding each component separately.
+     Desktop values below are the originals, so the ≥1025 render is unchanged. */
+  --gutter: 32px;
   --header-h: 84px;
+  --header-h-scrolled: 68px;
+  --section-y: 100px;
 
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -188,6 +195,14 @@ button {
   border: none;
   cursor: pointer;
   color: inherit;
+}
+
+/* Keyboard focus only: mouse/touch activation stays unringed, but tabbing
+   through the site always shows where you are. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 h1,
@@ -515,14 +530,14 @@ body.is-loading {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--color-border);
-  height: 68px;
+  height: var(--header-h-scrolled);
 }
 
 .header-inner {
   width: 100%;
   max-width: var(--container);
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 var(--gutter);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -656,6 +671,9 @@ body.is-loading {
 
 .nav-toggle {
   display: none;
+  /* Never let the header's flex line squeeze the burger: on a 320px phone it
+     was the only shrinkable item left and collapsed to an 18px sliver. */
+  flex: 0 0 auto;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -694,6 +712,9 @@ body.is-loading {
    ========================================================================== */
 .hero {
   position: relative;
+  /* vh first as the floor for iOS < 15.4, which drops the svh declaration
+     entirely and would otherwise leave the hero at content height. */
+  min-height: 100vh;
   min-height: 100svh;
   display: flex;
   align-items: center; /* vertically centre the split so it fills one screen */
@@ -710,7 +731,7 @@ body.is-loading {
   width: 100%;
   max-width: var(--container);
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 var(--gutter);
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.38fr);
   align-items: center;
@@ -805,6 +826,7 @@ body.is-loading {
 .hero-media img {
   width: 100%;
   height: auto;
+  max-height: min(88vh, 820px);
   max-height: min(88svh, 820px);
   object-fit: contain;
   filter: drop-shadow(0 26px 50px rgba(11, 22, 19, 0.16));
@@ -897,11 +919,11 @@ body.is-loading {
   width: 100%;
   max-width: var(--container);
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 var(--gutter);
 }
 
 .section {
-  padding: 100px 0;
+  padding: var(--section-y) 0;
   position: relative;
 }
 .section + .section {
@@ -1245,6 +1267,10 @@ body.is-loading {
   overflow-y: hidden;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  /* Keep a swipe on the strip inside the strip: without this, reaching either
+     end hands the gesture to the browser's back/forward navigation. */
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
   cursor: grab;
   will-change: scroll-position;
 }
@@ -1903,6 +1929,13 @@ body.is-loading {
 
 /* ---- ≤1024: sticky two-column split sections stack; footer stacks ---- */
 @media (max-width: 1024px) {
+  /* Tablet and below get a tighter gutter and vertical rhythm. Declared here
+     rather than in :root so the desktop render stays exactly as it was. */
+  :root {
+    --gutter: 28px;
+    --section-y: clamp(72px, 8vw, 92px);
+  }
+
   .split,
   .split.reverse {
     grid-template-columns: 1fr;
@@ -1915,9 +1948,10 @@ body.is-loading {
   .footer-top {
     grid-template-columns: 1fr;
   }
-  .edu-media {
-    min-height: 260px;
-  }
+  /* NB: no min-height here. .edu-media carries aspect-ratio: 1400/633, so any
+     min-height becomes the *driving* dimension and back-computes a width from
+     it — 260px tall forced a 575px-wide box, overflowing every phone. Letting
+     width lead keeps the frame inside the column at all sizes. */
 }
 
 /* ---- Tablet: tighten nav spacing before it collapses ---- */
@@ -1940,6 +1974,12 @@ body.is-loading {
 /* ---- ≤900: hamburger overlay menu · collabs → wrapped row ·
         moments → native touch scroll · 44px tap targets ---- */
 @media (max-width: 900px) {
+  :root {
+    --gutter: 24px;
+    --header-h: 72px;
+    --header-h-scrolled: 60px;
+  }
+
   .nav-toggle {
     display: flex;
     width: 44px;
@@ -1952,6 +1992,14 @@ body.is-loading {
   .theme-toggle {
     width: 44px;
     height: 44px;
+  }
+
+  /* The blurred ghost word behind the heading is set in nowrap at 1.5em, so it
+     is always wider than a phone. It is decorative and meant to bleed, but it
+     must not widen the page — clip it at the section edge. (clip, not hidden:
+     hidden would make this a scroll container and break anchor offsets.) */
+  .collabs {
+    overflow-x: clip;
   }
 
   /* The line-slide reveal (which needed the clip mask) doesn't run ≤900, so a
@@ -1998,8 +2046,15 @@ body.is-loading {
     inset: 0;
     background: var(--color-bg);
     display: flex;
-    align-items: center;
     justify-content: center;
+    /* A landscape phone is ~390px tall: six items plus the header no longer
+       fit, so the overlay has to scroll rather than crop its last links.
+       Centring is done with margin:auto on the list rather than align-items,
+       because a centred flex item that overflows becomes unreachable above
+       the scroll origin. */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     opacity: 0;
     visibility: hidden;
     transition:
@@ -2029,10 +2084,21 @@ body.is-loading {
 
   .main-nav ul {
     position: relative;
+    margin: auto; /* centres when it fits, scrolls from the top when it doesn't */
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 0 24px;
+    padding: calc(var(--header-h) + 12px) var(--gutter)
+      calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+  .main-nav li {
+    width: 100%;
+    text-align: center;
+  }
+  /* inline-block, not block: the hover/active underline is width:100% of the
+     link box, so a full-width block would stretch it past the word. */
+  .main-nav a {
+    display: inline-block;
   }
   .main-nav li {
     opacity: 0;
@@ -2139,9 +2205,6 @@ body.nav-open {
 
 /* ---- ≤768: tablet grid tuning ---- */
 @media (max-width: 768px) {
-  .section {
-    padding: 100px 0;
-  }
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 36px 20px;
@@ -2151,14 +2214,14 @@ body.nav-open {
 
 /* ---- ≤640: phones, multi-column grids collapse to one column ---- */
 @media (max-width: 640px) {
-  .section {
-    padding: 84px 0;
+  :root {
+    --gutter: 20px;
+    --section-y: clamp(64px, 12vw, 84px);
   }
-  .container {
-    padding: 0 20px;
-  }
+  /* The header is the only flex line still holding logo + two round buttons;
+     32px gaps no longer fit once the gutter shrinks. */
   .header-inner {
-    padding: 0 20px;
+    gap: 14px;
   }
 
   .hero-title {
@@ -2202,22 +2265,20 @@ body.nav-open {
   .footer-col-note {
     max-width: none;
   }
-  /* 44px tap height for footer links */
-  .footer-links a,
-  .footer-contact {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-  }
 }
 
 /* ---- ≤430: large phones, hero + full-width buttons ---- */
 @media (max-width: 430px) {
+  :root {
+    --header-h: 64px;
+    --header-h-scrolled: 56px;
+  }
   .hero {
     padding: calc(var(--header-h) + 24px) 0 64px;
   }
-  .hero-content {
-    padding: 0 20px;
+  /* Footer's two columns no longer hold a 44px icon row plus a paragraph. */
+  .footer-top {
+    grid-template-columns: 1fr;
   }
   /* Let the long headline wrap instead of clipping inside the reveal mask. */
   .hero-title {
@@ -2262,20 +2323,140 @@ body.nav-open {
 
 /* ---- ≤375: small phones (iPhone SE), final tightening ---- */
 @media (max-width: 375px) {
-  .container {
-    padding: 0 16px;
-  }
-  .header-inner {
-    padding: 0 16px;
-  }
-  .hero-content {
-    padding: 0 16px;
+  :root {
+    --gutter: 16px;
   }
   .collabs-pill--logo {
     padding: 10px 16px;
   }
   .collabs-pill--logo img {
     height: 42px;
+  }
+  /* Stat labels and work tags are the first things to wrap awkwardly here. */
+  .work-group-title {
+    gap: 12px;
+  }
+  .team-people-link {
+    gap: 8px;
+  }
+  .people-cta {
+    margin-left: 0;
+  }
+}
+
+/* ---- Short viewports: landscape phones, and small windows on a laptop.
+        Keyed on height so it applies to a rotated phone without also firing on
+        a narrow-but-tall portrait phone. ---- */
+@media (max-height: 520px) and (orientation: landscape) and (max-width: 1024px) {
+  .hero {
+    padding: calc(var(--header-h) + 16px) 0 32px;
+  }
+  /* Side-by-side again: in landscape the copy and photo each get half, which
+     reads far better than a stack that needs two screens of scrolling. */
+  .hero-content {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+  }
+  .hero-inner {
+    align-items: flex-start;
+  }
+  .hero-actions {
+    justify-content: flex-start;
+    margin-top: 20px;
+  }
+  .hero-media img {
+    max-height: 64svh;
+  }
+  /* Height-driven, not width-driven: at 844px wide the vw-based clamp resolved
+     to ~59px, which took four lines and pushed the CTA off a 390px screen. */
+  .hero-title {
+    font-size: clamp(24px, 7.4vh, 38px);
+  }
+  .hero-sub {
+    margin-top: 12px;
+    font-size: clamp(13px, 3.6vh, 15px);
+  }
+  .hero-inner .eyebrow {
+    margin-bottom: 10px;
+    font-size: 10.5px;
+  }
+  .hero-actions .btn {
+    padding: 11px 22px;
+    font-size: 14px;
+  }
+
+  /* The overlay menu has to fit six items into ~390px of height. */
+  .main-nav a {
+    font-size: clamp(20px, 4.6vh, 28px);
+  }
+  .main-nav ul {
+    gap: 2px;
+  }
+}
+
+/* ---- Touch/stylus pointers: the card lifts and shadows are hover affordances
+        that a finger can only trigger by tapping, where they then stick until
+        the next tap elsewhere. Drop them and keep the tap feedback instead. ---- */
+@media (hover: none) {
+  .value-card:hover,
+  .work-card:hover,
+  .team-card:hover,
+  .member:hover .member-photo,
+  .btn-primary:hover,
+  .btn-ghost:hover,
+  .footer-socials a:hover,
+  .team-jump a:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .team-card:hover .team-ini,
+  .team-card:hover .people-cta span {
+    transform: none;
+  }
+  .event-row:hover {
+    padding-left: 4px;
+    background: none;
+  }
+  .team-card:active,
+  .work-card:active,
+  .value-card:active {
+    border-color: var(--color-primary);
+  }
+
+  /* Tap targets. Keyed on the pointer, not the width, so an iPad in landscape
+     (1024px, still a finger) gets them while a 1024px laptop window does not.
+     These links were 24px tall — half the 44px minimum. */
+  /* The 44px tap height already separates these rows; the list's own 12px gap
+     on top of it read as 56px of dead air between four short links. */
+  .footer-links {
+    gap: 0;
+  }
+  .footer-links a,
+  .footer-contact {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .footer-socials a {
+    width: 48px;
+    height: 48px;
+  }
+  .logo {
+    min-height: 44px;
+  }
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+  /* Where the header nav is still a horizontal row, grow the hit area with a
+     transparent overlay instead of padding: the hover underline is anchored to
+     the link's bottom edge, so padding would detach it from the word. */
+  .main-nav a::before {
+    content: "";
+    position: absolute;
+    inset: -10px -8px;
   }
 }
 
@@ -2490,5 +2671,16 @@ body.nav-open {
   .member-grid {
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+  }
+}
+
+/* Touch sizing for the team page. Kept at the end of the file because the
+   .team-jump / .member rules above would otherwise win on equal specificity. */
+@media (hover: none) {
+  .team-jump a {
+    padding: 13px 20px;
+  }
+  .team-jump {
+    gap: 12px;
   }
 }

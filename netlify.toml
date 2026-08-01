@@ -1,0 +1,47 @@
+# Netlify config for a no-build static site: the repo root IS the site.
+# There is no bundler, so there is nothing to compile; Netlify just uploads
+# these files and serves index.html at /.
+
+[build]
+  publish = "."
+  command = ""
+
+# --------------------------------------------------------------------------
+# Caching
+# Filenames here are NOT fingerprinted (it is always css/style.css, never
+# style.a1b2c3.css), so an aggressive immutable cache would leave visitors
+# stuck on an old stylesheet after every update. Assets get a week with
+# revalidation; HTML/CSS/JS stay short so edits actually reach people.
+# --------------------------------------------------------------------------
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# --------------------------------------------------------------------------
+# Baseline security headers. Deliberately no Content-Security-Policy: the page
+# pulls GSAP and Lenis from jsDelivr and fonts from Fontshare/Google, so a CSP
+# would need those hosts allow-listed or the site breaks. Add one later if you
+# self-host those.
+# --------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"

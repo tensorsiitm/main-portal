@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   gsap.registerPlugin(ScrollTrigger);
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* On phones/small tablets, prefer smooth scrolling over heavy scroll-linked
-     effects: lighter reveals, no parallax, native (not JS) slider. Matches the
-     ≤900 CSS layout switches. */
+  /* Only for the one-shot entrance timeline, which is built and played once at
+     load. Every scroll-linked effect uses gsap.matchMedia() further down so it
+     re-builds on rotate/resize instead of being frozen at the load-time width. */
   const isMobile = window.matchMedia('(max-width: 900px)').matches;
 
   /* ---------------- Lenis smooth scroll ---------------- */
@@ -95,11 +95,16 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------------- Nav links: close menu + Lenis-aware smooth scroll ---------------- */
   mainNav.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', (e) => {
-      const target = document.querySelector(link.getAttribute('href'));
+      /* Close first: on team.html the hrefs are cross-page ("index.html#work",
+         "team.html"), which are not valid selectors. Querying them threw and
+         aborted the handler, so the mobile overlay stayed open over the page. */
       setNav(false);
+      const href = link.getAttribute('href') || '';
+      if (!href.startsWith('#')) return;          // let the browser navigate
+      const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
-        lenis.scrollTo(target, { offset: -70 });
+        lenis.scrollTo(target, { offset: -(header ? header.offsetHeight : 70) });
       }
     });
   });
@@ -229,8 +234,19 @@ document.addEventListener('DOMContentLoaded', () => {
       .to({}, { duration: 0.25 });   // brief hold at 100%
   }
 
+  /* ---------------- Breakpoint-aware scroll effects ----------------
+     Everything scroll-linked lives inside gsap.matchMedia() so that rotating a
+     tablet, resizing a window, or toggling the OS "reduce motion" setting tears
+     the old set down and builds the right one. Previously these branched on a
+     single isMobile read taken at load, which left a rotated tablet running
+     phone animations (or desktop pinning) until a full reload.               */
+  const mm = gsap.matchMedia();
+  const DESKTOP = '(min-width: 901px)';
+  const MOBILE = '(max-width: 900px)';
+  const MOTION = '(prefers-reduced-motion: no-preference)';
+
   /* Subtle parallax on the hero glow as user scrolls past hero (desktop only) */
-  if (!isMobile) {
+  mm.add(`${DESKTOP} and ${MOTION}`, () => {
     gsap.to('.hero-glow', {
       yPercent: 30,
       ease: 'none',
@@ -241,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scrub: true,
       },
     });
-  }
+  });
 
   /* ---------------- Scroll-linked parallax reveals (27n.gg-style) ----------------
      Opacity + motion are tied directly to scroll position (scrub), so content
@@ -249,9 +265,12 @@ document.addEventListener('DOMContentLoaded', () => {
      data-reveal values: '' (drift up), 'left'/'right' (slide in), 'scale' (grow
      from its own centre, used for the Values cards).                          */
   const reveals = gsap.utils.toArray('[data-reveal]');
-  if (reduceMotion) {
+
+  mm.add('(prefers-reduced-motion: reduce)', () => {
     gsap.set(reveals, { opacity: 1, x: 0, y: 0, scale: 1 });
-  } else if (isMobile) {
+  });
+
+  mm.add(`${MOBILE} and ${MOTION}`, () => {
     /* Mobile: a single lightweight fade-up per element (no scrub, no
        sideways/scale slides), cheaper to run and keeps scrolling smooth. */
     reveals.forEach((el) => {
@@ -268,7 +287,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       );
     });
-  } else {
+  });
+
+  mm.add(`${DESKTOP} and ${MOTION}`, () => {
     reveals.forEach((el) => {
       const dir = el.getAttribute('data-reveal');
       const from = { opacity: 0 };
@@ -298,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       );
     });
-  }
+  });
 
   /* ---------------- Collaborations: pinned scatter reveal ----------------
      The section PINS when it reaches the top of the viewport. While pinned,
@@ -309,12 +330,15 @@ document.addEventListener('DOMContentLoaded', () => {
      scrolling down again replays the whole thing.
      On mobile the CSS lays the pills out as a static row, so skip this.     */
   const collabsCloud = document.getElementById('collabs-cloud');
-  if (collabsCloud && !isMobile) {
+  if (collabsCloud) {
     const stage = collabsCloud.closest('.collabs-stage');
     const pills = gsap.utils.toArray(collabsCloud.children);
-    if (reduceMotion) {
+
+    mm.add(`${DESKTOP} and (prefers-reduced-motion: reduce)`, () => {
       gsap.set(pills, { '--p': 1 });
-    } else {
+    });
+
+    mm.add(`${DESKTOP} and ${MOTION}`, () => {
       gsap.set(pills, { '--p': 0 });
       gsap.timeline({
         scrollTrigger: {
@@ -327,7 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
           invalidateOnRefresh: true,
         },
       }).to(pills, { '--p': 1, ease: 'none', stagger: 0.06 });
-    }
+    });
+
+    /* ≤900 the CSS lays the pills out as a static wrapped row. Clear any --p
+       left behind by a desktop context we just resized out of, so the row is
+       never stuck mid-burst. */
+    mm.add(MOBILE, () => {
+      gsap.set(pills, { clearProps: '--p' });
+    });
   }
 
   /* ---------------- Count-up stats ---------------- */
@@ -356,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ---------------- Parallax on media (desktop only) ---------------- */
-  if (!reduceMotion && !isMobile) {
+  mm.add(`${DESKTOP} and ${MOTION}`, () => {
     gsap.utils.toArray('[data-parallax]').forEach((el) => {
       gsap.fromTo(
         el,
@@ -368,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       );
     });
-  }
+  });
 
   /* ---------------- Moments: auto-advancing, scrubbable strip ----------------
      A native horizontal scroll container that the script nudges along on its
@@ -456,6 +487,13 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------------- Footer year ---------------- */
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* Rotating a phone changes every trigger's start/end position, and mobile
+     browsers fire orientationchange before the new viewport is settled, so
+     recompute on the next frame after it lands. */
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => ScrollTrigger.refresh(), 250);
+  });
 
   ScrollTrigger.refresh();
 });
