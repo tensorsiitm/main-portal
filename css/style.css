@@ -2,8 +2,9 @@
    Tensors: Design Tokens
    ========================================================================== */
 :root {
-  /* LIGHT theme is now the default (matches the real tensors.in: light ground,
-     green brand). Dark theme is opt-in via [data-theme="dark"] below. */
+  /* Light is the only theme. (The Collaborations section still overrides these
+     tokens locally to render itself dark — that is a design feature of that
+     band, not a theme.) */
   --color-bg: #f6f8f7;
   --color-bg-alt: #edf1ef;
   --color-surface: #e3e9e6;
@@ -53,60 +54,21 @@
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Special Gothic: local placeholder @font-face. Replace files in
-   assets/fonts/ with real webfont files (woff2/woff) when available. */
-@font-face {
-  font-family: "Special Gothic";
-  src:
-    url("../assets/fonts/font-special-gothic.woff2") format("woff2"),
-    url("../assets/fonts/font-special-gothic.woff") format("woff");
-  font-weight: 400 900;
-  font-style: normal;
-  font-display: swap;
-}
-
+/* Display accents.
+   These replace the old "Special Gothic" @font-face, which pointed at 41-byte
+   placeholder stubs in assets/fonts/ and so silently fell back to Cabinet
+   Grotesk — the reason the Collaborations headline never looked heavier than
+   the rest of the page. All three are real webfonts loaded in the <head>. */
 :root {
-  --font-special-gothic: "Special Gothic", var(--font-display);
+  /* Archivo Black: single-weight grotesk, much heavier than Cabinet Grotesk's
+     900. Carries the giant "OUR COLLABORATIONS" statement. */
+  --font-impact: "Archivo Black", var(--font-display);
+  /* Dela Gothic One: chunky display gothic for the [ BRACKETED ] section labels. */
+  --font-eyebrow: "Dela Gothic One", var(--font-display);
+  /* Oregano: informal upright face for the team vertical badges. */
+  --font-oregano: "Oregano", var(--font-display);
 }
 
-/* Utility class to apply the Special Gothic face to specific text. */
-.font-special-gothic {
-  font-family: var(--font-special-gothic);
-  letter-spacing: -0.02em;
-}
-
-/* ==========================================================================
-   Dark theme: the original deep-green palette, now opt-in.
-   Toggled via [data-theme="dark"] on <html> (see js/main.js). Everything that
-   reads these tokens (or the *-rgb triplets) repaints instantly.
-   ========================================================================== */
-:root[data-theme="dark"] {
-  --color-bg: #07120f;
-  --color-bg-alt: #0c1a16;
-  --color-surface: #122622;
-  --color-border: rgba(255, 255, 255, 0.1);
-  --grid-line: rgba(
-    44,
-    191,
-    156,
-    0.045
-  ); /* faint green-tinted site-wide grid */
-
-  --color-text: #ffffff;
-  --color-text-muted: rgba(255, 255, 255, 0.65);
-  --color-text-faint: rgba(255, 255, 255, 0.4);
-
-  --color-primary: #22a286; /* exact Tensors logo green (sampled) */
-  --color-primary-light: #2cbf9c;
-  --color-primary-deep: #14614f;
-  --color-teal: #2cbf9c;
-  --color-orange: #e8622c;
-
-  --color-primary-rgb: 34, 162, 134;
-  --color-teal-rgb: 44, 191, 156;
-  --color-bg-rgb: 7, 18, 15;
-  --color-text-rgb: 255, 255, 255;
-}
 
 /* ==========================================================================
    Reset
@@ -156,26 +118,9 @@ body::before {
   );
 }
 
-/* Smooth cross-fade when switching themes. Scoped to color properties so it
-   never interferes with GSAP transforms / reveal animations. */
-body,
-.site-header,
-.value-card,
-.work-card,
-.team-card,
-.quote-card,
-.vision-card,
-.collabs-pill,
-.event-row,
-.edu-list li::before,
-.ph,
-.work-media,
-.team-badge {
-  transition:
-    background-color 0.45s var(--ease),
-    border-color 0.45s var(--ease),
-    color 0.45s var(--ease);
-}
+/* (The site-wide colour transition that lived here only existed to cross-fade
+   between the light and dark themes. With one theme it had no purpose, and each
+   component below declares the transitions it actually needs.) */
 
 img {
   max-width: 100%;
@@ -225,10 +170,14 @@ h4 {
 /* Eyebrows / section labels use the mono face, the signature technical
    accent that anchors the type hierarchy. */
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 12px;
+  font-family: var(--font-eyebrow);
+  /* Dela Gothic One is a much wider, heavier face than Space Mono at the same
+     size, so the label steps down and loses the tracking to stay on one line
+     (the hero's is the longest: "[ IIT MADRAS · STUDENT-RUN CONSULTANCY ]"). */
+  font-size: clamp(10px, 1.05vw, 11px);
   font-weight: 400;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
   text-transform: uppercase;
   color: var(--color-teal);
 }
@@ -621,53 +570,7 @@ body.is-loading {
 }
 
 /* ---- Theme toggle (sun / moon) ---- */
-.theme-toggle {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-muted);
-  position: relative;
-  z-index: 2;
-  transition:
-    color 0.25s var(--ease),
-    border-color 0.25s var(--ease),
-    background 0.25s var(--ease);
-}
-.theme-toggle:hover {
-  color: var(--color-text);
-  border-color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
-}
-.theme-icon {
-  width: 19px;
-  height: 19px;
-  position: absolute;
-  transition:
-    opacity 0.3s var(--ease),
-    transform 0.4s var(--ease);
-}
-/* Light theme (default) shows the moon (tap → go dark); dark shows the sun. */
-.theme-icon--sun {
-  opacity: 0;
-  transform: rotate(90deg) scale(0.6);
-}
-.theme-icon--moon {
-  opacity: 1;
-  transform: rotate(0) scale(1);
-}
-:root[data-theme="dark"] .theme-icon--sun {
-  opacity: 1;
-  transform: rotate(0) scale(1);
-}
-:root[data-theme="dark"] .theme-icon--moon {
-  opacity: 0;
-  transform: rotate(-90deg) scale(0.6);
-}
+/* ---- Theme toggle removed: the site is light-only. ---- */
 
 .nav-toggle {
   display: none;
@@ -680,6 +583,8 @@ body.is-loading {
   width: 32px;
   height: 32px;
   z-index: 2;
+  /* Skip the mobile double-tap-zoom wait so the first tap opens the menu. */
+  touch-action: manipulation;
 }
 .nav-toggle span {
   display: block;
@@ -1357,9 +1262,9 @@ body.is-loading {
 }
 .team-badge {
   display: inline-block;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 13px;
+  font-family: var(--font-oregano);
+  font-weight: 400; /* Oregano ships a single weight */
+  font-size: 16px; /* Oregano runs small, so it steps up from 13px */
   letter-spacing: 0.04em;
   color: #fff;
   background: var(--v, var(--color-primary));
@@ -1643,7 +1548,12 @@ body.is-loading {
   position: relative;
   z-index: 2;
   max-width: 15ch;
-  font-size: clamp(38px, 6.4vw, 92px);
+  /* Archivo Black is heavier and wider than Cabinet Grotesk 700, so the ceiling
+     comes down a little to keep "OUR COLLABORATIONS" on two lines. */
+  font-family: var(--font-impact);
+  font-weight: 400; /* Archivo Black is already the heavy weight */
+  font-size: clamp(34px, 5.6vw, 80px);
+  letter-spacing: -0.02em;
   text-align: center;
 }
 .collabs-giant::before {
@@ -1653,7 +1563,9 @@ body.is-loading {
   top: 55%;
   z-index: -1;
   transform: translate(-50%, -50%);
-  font-size: 1.5em;
+  /* Archivo Black is far wider than the old fallback, so the ghost steps down
+     from 1.5em — at 1.5 the word ran ~2100px and only its middle was on screen. */
+  font-size: 1.15em;
   white-space: nowrap;
   letter-spacing: 0.02em;
   color: var(--color-text);
@@ -1989,10 +1901,6 @@ body.is-loading {
   .header-cta {
     display: none;
   }
-  .theme-toggle {
-    width: 44px;
-    height: 44px;
-  }
 
   /* The blurred ghost word behind the heading is set in nowrap at 1.5em, so it
      is always wider than a phone. It is decorative and meant to bleed, but it
@@ -2198,9 +2106,20 @@ body.is-loading {
   }
 }
 
-/* Lock page scroll while the overlay menu is open */
+/* Lock page scroll while the overlay menu is open.
+   position:fixed rather than overflow:hidden — iOS Safari does not reliably
+   honour overflow:hidden on <body> and jumps the page to the top when it is
+   applied mid-scroll, so opening the menu anywhere below the hero threw the
+   reader back to the top. JS stores the scroll offset in top: -Ypx and
+   restores it on close. */
 body.nav-open {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 /* ---- ≤768: tablet grid tuning ---- */
@@ -2446,10 +2365,6 @@ body.nav-open {
   .logo {
     min-height: 44px;
   }
-  .theme-toggle {
-    width: 44px;
-    height: 44px;
-  }
   /* Where the header nav is still a horizontal row, grow the hit area with a
      transparent overlay instead of padding: the hover underline is anchored to
      the link's bottom edge, so padding would detach it from the word. */
@@ -2460,12 +2375,13 @@ body.nav-open {
   }
 }
 
-/* Reduced-motion: only the DESKTOP scatter needs its centred transform; on
-   <=900 the pills are laid out statically, so don't force it there. */
+/* Reduced motion: show the scatter already arrived rather than animating it.
+   Driving --p to 1 keeps each pill's own --x/--y offset, which an !important
+   transform used to discard — that stacked all nine logos in a single
+   unreadable pile at the centre of the section. */
 @media (prefers-reduced-motion: reduce) and (min-width: 901px) {
   .collabs-pill {
-    opacity: 1;
-    transform: translate(-50%, -50%) !important;
+    --p: 1;
   }
 }
 
@@ -2498,10 +2414,10 @@ body.nav-open {
    the jump nav previews the color-coding used further down the page. At rest
    the pills stay near-neutral; hover and keyboard focus bring the accent up. */
 .team-jump a {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 12px;
-  letter-spacing: 0.12em;
+  font-family: var(--font-oregano);
+  font-weight: 400; /* Oregano ships a single weight */
+  font-size: 16px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 10px 18px;
   border: 1.5px solid

@@ -35,27 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Scroll stays locked until the launch animation finishes */
   lenis.stop();
 
-  /* ---------------- Theme toggle (light / dark) ----------------
-     The <head> script already applied the initial theme (saved choice or
-     system preference). Here we just wire the button to flip + persist it. */
-  const themeToggle = document.getElementById('theme-toggle');
-  if (themeToggle) {
-    const root = document.documentElement;
-    const syncButton = () => {
-      const isDark = root.getAttribute('data-theme') === 'dark';
-      themeToggle.setAttribute('aria-pressed', String(isDark));
-      themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-    };
-    syncButton();
-    themeToggle.addEventListener('click', () => {
-      const nowDark = root.getAttribute('data-theme') !== 'dark';
-      if (nowDark) root.setAttribute('data-theme', 'dark');
-      else root.removeAttribute('data-theme');
-      try { localStorage.setItem('tensors-theme', nowDark ? 'dark' : 'light'); } catch (e) {}
-      syncButton();
-    });
-  }
-
   /* ---------------- Header: scrolled + auto-hide ---------------- */
   const header = document.getElementById('site-header');
   let lastScroll = 0;
@@ -78,12 +57,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const navToggle = document.getElementById('nav-toggle');
   const mainNav = document.getElementById('main-nav');
 
+  /* Scroll position is parked while the overlay is open and handed back on
+     close. See body.nav-open in the CSS for why this is position:fixed rather
+     than overflow:hidden. */
+  let navScrollY = 0;
+
   const setNav = (open) => {
+    const body = document.body;
+    const wasOpen = body.classList.contains('nav-open');
+
+    /* Always re-sync the visual state, even if the lock is already correct, so
+       a missed pointer event can never leave the burger and the panel
+       disagreeing about whether the menu is open. */
     mainNav.classList.toggle('is-open', open);
     navToggle.classList.toggle('is-open', open);
-    document.body.classList.toggle('nav-open', open);
-    navToggle.setAttribute('aria-expanded', open);
-    open ? lenis.stop() : lenis.start();
+    navToggle.setAttribute('aria-expanded', String(open));
+
+    if (open === wasOpen) return;
+
+    if (open) {
+      navScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      lenis.stop();
+      body.style.top = `-${navScrollY}px`;
+      body.classList.add('nav-open');
+    } else {
+      body.classList.remove('nav-open');
+      body.style.top = '';
+      /* Jump back before Lenis resumes, otherwise it animates from 0. */
+      window.scrollTo(0, navScrollY);
+      lenis.start();
+    }
   };
 
   navToggle.addEventListener('click', () => setNav(!mainNav.classList.contains('is-open')));
@@ -104,7 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = document.querySelector(href);
       if (target) {
         e.preventDefault();
-        lenis.scrollTo(target, { offset: -(header ? header.offsetHeight : 70) });
+        /* Next frame: setNav(false) has just un-fixed <body> and restored the
+           parked offset, so wait for that to land before starting the tween. */
+        requestAnimationFrame(() => {
+          lenis.scrollTo(target, { offset: -(header ? header.offsetHeight : 70) });
+        });
       }
     });
   });
