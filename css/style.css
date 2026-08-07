@@ -65,8 +65,10 @@
   --font-impact: "Archivo Black", var(--font-display);
   /* Dela Gothic One: chunky display gothic for the [ BRACKETED ] section labels. */
   --font-eyebrow: "Dela Gothic One", var(--font-display);
-  /* Oregano: informal upright face for the team vertical badges. */
-  --font-oregano: "Oregano", var(--font-display);
+  /* Georgia for the team vertical names (Tenlink / Tensci / Tenment), on both
+     the home badges and the team-page jump pills. A system serif, so there is
+     no webfont to load; the stack falls back to any platform serif. */
+  --font-vertical: Georgia, "Times New Roman", Times, serif;
 }
 
 
@@ -1262,10 +1264,12 @@ body.is-loading {
 }
 .team-badge {
   display: inline-block;
-  font-family: var(--font-oregano);
-  font-weight: 400; /* Oregano ships a single weight */
-  font-size: 16px; /* Oregano runs small, so it steps up from 13px */
-  letter-spacing: 0.04em;
+  font-family: var(--font-vertical);
+  /* Georgia has a tall x-height and a real bold, so it comes back down from
+     the 16px Oregano needed and picks up weight for white-on-colour. */
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.02em;
   color: #fff;
   background: var(--v, var(--color-primary));
   padding: 5px 14px;
@@ -2414,10 +2418,10 @@ body.nav-open {
    the jump nav previews the color-coding used further down the page. At rest
    the pills stay near-neutral; hover and keyboard focus bring the accent up. */
 .team-jump a {
-  font-family: var(--font-oregano);
-  font-weight: 400; /* Oregano ships a single weight */
-  font-size: 16px;
-  letter-spacing: 0.08em;
+  font-family: var(--font-vertical);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 10px 18px;
   border: 1.5px solid
