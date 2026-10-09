@@ -1450,6 +1450,137 @@ body.is-loading {
 }
 
 /* ==========================================================================
+   Olympiad 2026 (time-bound announcement; every rule is scoped to .oly-*,
+   so removing the section and this block leaves the rest of the page as-is)
+   ========================================================================== */
+/* Headline event: heading, copy and facts run a step larger and heavier than
+   the standard section scale. */
+.olympiad .section-title {
+  font-size: clamp(36px, 5.6vw, 66px);
+  font-weight: 900;
+  line-height: 1.02;
+}
+.olympiad .section-sub {
+  font-size: clamp(17px, 1.7vw, 20px);
+  font-weight: 500;
+  color: var(--color-text);
+}
+.oly-list li {
+  font-size: clamp(15.5px, 1.4vw, 17px);
+}
+.oly-list span {
+  font-weight: 700;
+}
+.oly-card {
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-bg-alt);
+  padding: clamp(24px, 3.5vw, 40px);
+}
+.oly-card > * + * {
+  margin-top: 24px;
+}
+.oly-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.35);
+  border-radius: 100px;
+  padding: 6px 15px;
+}
+.oly-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: olyPulse 2s var(--ease) infinite;
+}
+@keyframes olyPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(var(--color-primary-rgb), 0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--color-primary-rgb), 0); }
+}
+/* The fact strip sizes itself against its own width (container query), not
+   the viewport, so the longest value ("Rs 1,00,000") always fits its cell:
+   2x2 by default, 4-up only once each column has room. */
+.oly-facts-wrap {
+  container-type: inline-size;
+}
+.oly-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.oly-fact {
+  padding: 22px clamp(10px, 3cqi, 16px);
+  min-width: 0;
+}
+.oly-fact:nth-child(even) {
+  border-left: 1px solid var(--color-border);
+}
+.oly-fact:nth-child(n + 3) {
+  border-top: 1px solid var(--color-border);
+}
+@container (min-width: 820px) {
+  .oly-facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .oly-fact + .oly-fact {
+    border-left: 1px solid var(--color-border);
+  }
+  .oly-fact:nth-child(n + 3) {
+    border-top: 0;
+  }
+  .oly-facts .oly-fact dd {
+    font-size: clamp(18px, 2.6cqi, 26px);
+  }
+}
+.oly-fact dt {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+.oly-fact dd {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  /* Fallback first, then the container-relative size (2-up / 4-up). */
+  font-size: 20px;
+  font-size: clamp(15px, 5.2cqi, 26px);
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+.oly-actions .btn {
+  padding: 17px 38px;
+  font-size: 17px;
+  font-weight: 700;
+}
+.oly-note {
+  font-size: 14px;
+  color: var(--color-text-faint);
+}
+@media (max-width: 430px) {
+  .oly-actions .btn {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oly-status::before {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
    Events
    ========================================================================== */
 .events-list {
